@@ -1,0 +1,2885 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THAI READING ADVENTURE - โรงเรียนบึงงามพัฒนา</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt & Sarabun for easy Thai reading -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                        reading: ['Sarabun', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#1E88E5',
+                            darkBlue: '#1565C0',
+                            yellow: '#FFC107',
+                            orange: '#FF7043',
+                            green: '#43A047',
+                            bg: '#F0F7FF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #F0F7FF;
+            user-select: none;
+        }
+        .reading-text {
+            font-family: 'Sarabun', sans-serif;
+            line-height: 1.8;
+        }
+        /* Cute Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .owl-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .card-bounce {
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .card-bounce:hover {
+            transform: translateY(-6px) scale(1.01);
+        }
+        .btn-kid {
+            transition: all 0.15s ease;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.18);
+        }
+        .btn-kid:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.18);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #E3F2FD; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #90CAF9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1E88E5; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <!-- ==================== LOADING OVERLAY ==================== -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex-col items-center justify-center text-white">
+        <div class="w-20 h-20 border-8 border-brand-yellow border-t-brand-blue rounded-full animate-spin mb-4"></div>
+        <p id="loadingText" class="text-xl font-bold tracking-wide">กำลังโหลดข้อมูล...</p>
+    </div>
+
+    <!-- ==================== CUSTOM TOAST / NOTIFICATION ==================== -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4"></div>
+
+    <!-- ==================== TOP NAVIGATION BAR ==================== -->
+    <header class="bg-gradient-to-r from-brand-darkBlue via-brand-blue to-sky-500 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- Brand Logo & Mascot -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="App.navigate('dashboard')">
+                <div class="w-14 h-14 bg-white rounded-2xl p-1.5 shadow-md flex items-center justify-center owl-float">
+                    <!-- SVG Owl Mascot: พี่ฮูกนักอ่าน -->
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <circle cx="50" cy="52" r="40" fill="#FF7043"/>
+                        <ellipse cx="50" cy="62" rx="28" ry="25" fill="#FFF3E0"/>
+                        <!-- Ears -->
+                        <polygon points="18,25 32,12 36,30" fill="#E64A19"/>
+                        <polygon points="82,25 68,12 64,30" fill="#E64A19"/>
+                        <!-- Eyes -->
+                        <circle cx="36" cy="44" r="14" fill="#FFFFFF" stroke="#1E88E5" stroke-width="3"/>
+                        <circle cx="64" cy="44" r="14" fill="#FFFFFF" stroke="#1E88E5" stroke-width="3"/>
+                        <circle cx="36" cy="44" r="6" fill="#1E293B"/>
+                        <circle cx="64" cy="44" r="6" fill="#1E293B"/>
+                        <circle cx="38" cy="41" r="2.5" fill="#FFFFFF"/>
+                        <circle cx="66" cy="41" r="2.5" fill="#FFFFFF"/>
+                        <!-- Glasses bridge -->
+                        <line x1="50" y1="44" x2="50" y2="44" stroke="#1E88E5" stroke-width="4"/>
+                        <!-- Beak -->
+                        <polygon points="44,52 56,52 50,62" fill="#FFC107"/>
+                        <!-- Graduation Cap -->
+                        <polygon points="50,4 20,18 50,30 80,18" fill="#1565C0"/>
+                        <rect x="35" y="24" width="30" height="6" rx="2" fill="#FFC107"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-brand-yellow text-slate-900 text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase">โรงเรียนบึงงามพัฒนา</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-tight drop-shadow-sm">THAI READING ADVENTURE</h1>
+                </div>
+            </div>
+
+            <!-- Right Controls & Active User Status -->
+            <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <!-- Stars & Coins Badge (Visible for Students) -->
+                <div id="studentStatsBadge" class="hidden sm:flex items-center gap-2 bg-white/15 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-white/25">
+                    <div class="flex items-center gap-1.5 text-brand-yellow font-bold">
+                        <i class="fa-solid fa-star text-lg drop-shadow"></i>
+                        <span id="headerStars">0</span>
+                    </div>
+                    <span class="text-white/40">|</span>
+                    <div class="flex items-center gap-1.5 text-amber-300 font-bold">
+                        <i class="fa-solid fa-coins text-lg drop-shadow"></i>
+                        <span id="headerCoins">0</span>
+                    </div>
+                </div>
+
+                <!-- Current User Pill -->
+                <div id="userStatusPill" class="flex items-center gap-2 bg-white text-slate-800 px-3.5 py-1.5 rounded-2xl shadow-sm font-semibold text-sm">
+                    <i class="fa-solid fa-user-graduate text-brand-blue"></i>
+                    <span id="headerUserName">ยังไม่ได้เข้าสู่ระบบ</span>
+                    <span id="headerUserRole" class="bg-sky-100 text-brand-darkBlue text-xs px-2 py-0.5 rounded-lg font-bold">ผู้เยี่ยมชม</span>
+                </div>
+
+                <!-- API Settings Button -->
+                <button onclick="App.openModal('apiConfigModal')" class="bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-xl transition" title="ตั้งค่าการเชื่อมต่อ Google Apps Script API">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span id="apiStatusDot" class="inline-block w-2.5 h-2.5 rounded-full bg-amber-400 ml-1"></span>
+                </button>
+
+                <!-- Logout / Switch Account -->
+                <button id="logoutBtn" onclick="Auth.logout()" class="bg-brand-orange hover:bg-orange-600 text-white font-bold px-4 py-2 rounded-xl btn-kid text-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>สลับบัญชี</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sub-navigation Bar -->
+        <nav id="mainNav" class="bg-white border-b border-slate-200 text-slate-700 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 flex items-center gap-2 overflow-x-auto py-2">
+                <button onclick="App.navigate('dashboard')" data-nav="dashboard" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm sm:text-base whitespace-nowrap transition">
+                    <i class="fa-solid fa-house-chimney text-brand-blue"></i> หน้าหลัก
+                </button>
+                <button onclick="App.navigate('lessons')" data-nav="lessons" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm sm:text-base whitespace-nowrap transition">
+                    <i class="fa-solid fa-book-open-reader text-brand-green"></i> บทเรียน (ป.1–ป.3)
+                </button>
+                <button onclick="App.navigate('studio')" data-nav="studio" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm sm:text-base whitespace-nowrap transition">
+                    <i class="fa-solid fa-microphone-lines text-brand-orange"></i> ฝึกอ่านออกเสียง & AI
+                </button>
+                <button onclick="App.navigate('games')" data-nav="games" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm sm:text-base whitespace-nowrap transition">
+                    <i class="fa-solid fa-gamepad text-purple-600"></i> เกมฝึกทักษะ (5 เกม)
+                </button>
+                <button onclick="App.navigate('history')" data-nav="history" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm sm:text-base whitespace-nowrap transition">
+                    <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> ประวัติการอ่าน
+                </button>
+                <button id="navTeacherBtn" onclick="App.navigate('teacher')" data-nav="teacher" class="nav-tab hidden items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm sm:text-base whitespace-nowrap transition bg-emerald-50 text-emerald-800">
+                    <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> ระบบครูผู้สอน
+                </button>
+                <button id="navAdminBtn" onclick="App.navigate('admin')" data-nav="admin" class="nav-tab hidden items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm sm:text-base whitespace-nowrap transition bg-indigo-50 text-indigo-800">
+                    <i class="fa-solid fa-user-shield text-indigo-600"></i> ระบบผู้ดูแลและคู่มือ Deploy
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+
+        <!-- ==================== 0. LOGIN / AUTH VIEW ==================== -->
+        <section id="view-login" class="hidden max-w-4xl mx-auto my-4">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-brand-blue/20 grid md:grid-cols-5">
+                <!-- Left Mascot Welcome -->
+                <div class="md:col-span-2 bg-gradient-to-br from-brand-blue to-brand-darkBlue text-white p-8 flex flex-col justify-between items-center text-center">
+                    <div>
+                        <span class="bg-brand-yellow text-slate-900 font-extrabold px-3 py-1 rounded-full text-xs">ยินดีต้อนรับสู่การผจญภัย</span>
+                        <h2 class="text-2xl font-extrabold mt-3">สวัสดีจ้า! พี่ฮูกนักอ่าน</h2>
+                        <p class="text-sky-100 text-sm mt-2">มาฝึกอ่านภาษาไทยให้เก่ง สะสมดาวและเหรียญรางวัลไปด้วยกันนะ!</p>
+                    </div>
+                    <div class="my-6 w-36 h-36 bg-white/15 rounded-full flex items-center justify-center p-4 owl-float">
+                        <i class="fa-solid fa-book-open-reader text-7xl text-brand-yellow"></i>
+                    </div>
+                    <div class="text-xs text-sky-100 bg-black/20 p-3 rounded-2xl w-full">
+                        <p class="font-bold text-brand-yellow mb-1"><i class="fa-solid fa-key"></i> บัญชีทดสอบ (คลิกเพื่อกรอกอัตโนมัติ):</p>
+                        <div class="flex flex-wrap justify-center gap-1.5 mt-2">
+                            <button onclick="Auth.fillDemo('student', '1001', '1234')" class="bg-white text-slate-800 px-2.5 py-1 rounded-lg font-bold hover:bg-brand-yellow transition">นักเรียน ป.1 (1001)</button>
+                            <button onclick="Auth.fillDemo('student', '2001', '1234')" class="bg-white text-slate-800 px-2.5 py-1 rounded-lg font-bold hover:bg-brand-yellow transition">นักเรียน ป.2 (2001)</button>
+                            <button onclick="Auth.fillDemo('student', '3001', '1234')" class="bg-white text-slate-800 px-2.5 py-1 rounded-lg font-bold hover:bg-brand-yellow transition">นักเรียน ป.3 (3001)</button>
+                            <button onclick="Auth.fillDemo('teacher', 'T01', '1234')" class="bg-emerald-400 text-slate-900 px-2.5 py-1 rounded-lg font-bold hover:bg-emerald-300 transition">ครูผู้สอน (T01)</button>
+                            <button onclick="Auth.fillDemo('admin', 'ADMIN', '1234')" class="bg-amber-300 text-slate-900 px-2.5 py-1 rounded-lg font-bold hover:bg-amber-200 transition">แอดมิน (ADMIN)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Login Form -->
+                <div class="md:col-span-3 p-8">
+                    <div class="flex gap-2 mb-6 bg-slate-100 p-1.5 rounded-2xl">
+                        <button id="roleTab-student" onclick="Auth.switchRoleTab('student')" class="flex-1 py-2.5 rounded-xl font-bold text-sm transition bg-brand-blue text-white shadow">
+                            <i class="fa-solid fa-child-reaching mr-1"></i> นักเรียน
+                        </button>
+                        <button id="roleTab-teacher" onclick="Auth.switchRoleTab('teacher')" class="flex-1 py-2.5 rounded-xl font-bold text-sm transition text-slate-600">
+                            <i class="fa-solid fa-chalkboard-user mr-1"></i> ครูผู้สอน
+                        </button>
+                        <button id="roleTab-admin" onclick="Auth.switchRoleTab('admin')" class="flex-1 py-2.5 rounded-xl font-bold text-sm transition text-slate-600">
+                            <i class="fa-solid fa-user-gear mr-1"></i> ผู้ดูแลระบบ
+                        </button>
+                    </div>
+
+                    <form onsubmit="Auth.handleLogin(event)" class="space-y-5">
+                        <div>
+                            <label id="loginIdLabel" class="block text-sm font-bold text-slate-700 mb-2">รหัสนักเรียน (เช่น 1001, 2001, 3001)</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-id-card absolute left-4 top-3.5 text-slate-400 text-lg"></i>
+                                <input id="loginIdInput" type="text" required placeholder="กรอกรหัสประจำตัว" class="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-brand-blue focus:outline-none text-lg font-bold">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">รหัสลับ PIN 4 หลัก (ค่าเริ่มต้น 1234)</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400 text-lg"></i>
+                                <input id="loginPinInput" type="password" maxlength="8" required placeholder="••••" class="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-brand-blue focus:outline-none text-lg font-bold tracking-widest">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-brand-green hover:bg-green-600 text-white font-extrabold py-4 rounded-2xl text-lg btn-kid flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rocket"></i> เข้าสู่การผจญภัย!
+                        </button>
+                    </form>
+
+                    <div class="mt-6 pt-5 border-t border-slate-100 text-xs text-slate-500 flex items-center justify-between">
+                        <span><i class="fa-solid fa-shield-halved text-brand-blue"></i> ระบบป้องกันการดูข้อมูลข้ามบัญชีนักเรียน</span>
+                        <span id="loginApiModeText" class="font-semibold text-amber-600">โหมดฐานข้อมูลจำลอง + พร้อมซิงค์ GAS</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 1. MAIN DASHBOARD VIEW ==================== -->
+        <section id="view-dashboard" class="hidden space-y-6">
+            <!-- Hero Student Banner -->
+            <div class="bg-gradient-to-r from-brand-blue via-sky-500 to-emerald-500 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="grid md:grid-cols-3 gap-6 items-center relative z-10">
+                    <!-- Student Profile Info -->
+                    <div class="md:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                        <div class="w-24 h-24 bg-white rounded-3xl p-2 shadow-lg flex items-center justify-center shrink-0 border-4 border-brand-yellow">
+                            <span id="dashAvatarEmoji" class="text-5xl">🦉</span>
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <span id="dashGradeBadge" class="bg-brand-yellow text-slate-900 font-extrabold px-3 py-1 rounded-full text-sm">ชั้นประถมศึกษาปีที่ 1</span>
+                                <span id="dashStudentCode" class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold">รหัส: 1001</span>
+                                <span id="dashSkillGroup" class="bg-emerald-900/40 px-3 py-1 rounded-full text-xs font-bold">กลุ่ม: กำลังพัฒนา</span>
+                            </div>
+                            <h2 id="dashStudentName" class="text-2xl md:text-3xl font-extrabold">ด.ช. ก้องภพ รักการอ่าน</h2>
+                            <p id="dashOwlGreeting" class="text-sky-100 text-sm mt-1">“วันนี้มาฝึกอ่านสะสมดาวกันต่อเถอะ! อ่านออกเสียงชัด ๆ พี่ฮูกรอฟังอยู่นะ”</p>
+                        </div>
+                    </div>
+
+                    <!-- Stars, Coins & Overall Progress -->
+                    <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 border border-white/25 flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3 text-center">
+                            <div class="bg-white/20 rounded-xl p-2.5">
+                                <div class="text-brand-yellow text-2xl font-extrabold flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-star"></i> <span id="dashStars">0</span>
+                                </div>
+                                <div class="text-xs text-sky-100">ดาวสะสม</div>
+                            </div>
+                            <div class="bg-white/20 rounded-xl p-2.5">
+                                <div class="text-amber-300 text-2xl font-extrabold flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-coins"></i> <span id="dashCoins">0</span>
+                                </div>
+                                <div class="text-xs text-sky-100">เหรียญนักอ่าน</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1">
+                                <span>ความก้าวหน้าในระดับชั้น</span>
+                                <span id="dashProgressPercent">0%</span>
+                            </div>
+                            <div class="w-full h-3.5 bg-black/20 rounded-full overflow-hidden p-0.5">
+                                <div id="dashProgressBar" class="bg-brand-yellow h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Big Buttons for Kids -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button onclick="App.navigate('lessons')" class="bg-brand-blue hover:bg-brand-darkBlue text-white p-5 rounded-3xl btn-kid flex items-center gap-4 text-left">
+                    <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl shrink-0">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase font-bold text-sky-200">เริ่มต้นเรียนรู้</div>
+                        <div class="text-xl font-extrabold">เข้าสู่บทเรียน</div>
+                    </div>
+                </button>
+                <button onclick="App.navigate('studio')" class="bg-brand-orange hover:bg-orange-600 text-white p-5 rounded-3xl btn-kid flex items-center gap-4 text-left">
+                    <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl shrink-0">
+                        <i class="fa-solid fa-microphone-lines"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase font-bold text-orange-100">ฝึกพูด & ประเมินผล</div>
+                        <div class="text-xl font-extrabold">ห้องฝึกอ่านออกเสียง</div>
+                    </div>
+                </button>
+                <button onclick="App.navigate('games')" class="bg-brand-green hover:bg-green-600 text-white p-5 rounded-3xl btn-kid flex items-center gap-4 text-left">
+                    <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl shrink-0">
+                        <i class="fa-solid fa-puzzle-piece"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase font-bold text-emerald-100">สนุกได้ความรู้</div>
+                        <div class="text-xl font-extrabold">ตะลุยด่านเกมทั้ง 5</div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Current Lessons vs Completed Lessons Grid -->
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- บทเรียนที่กำลังเรียน -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-sky-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-extrabold flex items-center gap-2 text-brand-darkBlue">
+                            <i class="fa-solid fa-fire-flame-curved text-brand-orange"></i> บทเรียนที่กำลังเรียน
+                        </h3>
+                        <button onclick="App.navigate('lessons')" class="text-sm font-bold text-brand-blue hover:underline">ดูทั้งหมด <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div id="dashInProgressList" class="space-y-3"></div>
+                </div>
+
+                <!-- บทเรียนที่เรียนสำเร็จ -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-emerald-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-extrabold flex items-center gap-2 text-brand-green">
+                            <i class="fa-solid fa-circle-check"></i> บทเรียนที่เรียนสำเร็จแล้ว
+                        </h3>
+                        <span id="dashCompletedCount" class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full">0 บทเรียน</span>
+                    </div>
+                    <div id="dashCompletedList" class="space-y-3"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 2. LESSONS SYSTEM (ป.1 - ป.3) ==================== -->
+        <section id="view-lessons" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-sky-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-brand-blue"></i> ระบบบทเรียนภาษาไทย (ป.1 – ป.3)
+                    </h2>
+                    <p class="text-sm text-slate-500">เลือกชั้นเรียนเพื่อดูบทเรียน ฟังเสียงตัวอย่าง และสะสมดาวเพื่อปลดล็อกด่านถัดไป</p>
+                </div>
+                <!-- Level Filter Tabs -->
+                <div class="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                    <button onclick="Lessons.setGradeFilter('P1')" id="gradeBtn-P1" class="grade-tab px-5 py-2.5 rounded-xl font-extrabold text-sm transition">
+                        🌱 ชั้น ป.1
+                    </button>
+                    <button onclick="Lessons.setGradeFilter('P2')" id="gradeBtn-P2" class="grade-tab px-5 py-2.5 rounded-xl font-extrabold text-sm transition">
+                        🌿 ชั้น ป.2
+                    </button>
+                    <button onclick="Lessons.setGradeFilter('P3')" id="gradeBtn-P3" class="grade-tab px-5 py-2.5 rounded-xl font-extrabold text-sm transition">
+                        🌳 ชั้น ป.3
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lesson Cards Grid -->
+            <div id="lessonCardsContainer" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        </section>
+
+        <!-- ==================== 3. READING & AI STUDIO VIEW ==================== -->
+        <section id="view-studio" class="hidden space-y-6">
+            <!-- Top Lesson Selector & Instructions -->
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-orange-100">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <span id="studioLessonBadge" class="bg-orange-100 text-brand-orange font-extrabold text-xs px-3 py-1 rounded-full">ห้องฝึกอ่านออกเสียงอัจฉริยะ</span>
+                        <h2 id="studioLessonTitle" class="text-2xl font-extrabold text-slate-800 mt-1">เลือกบทเรียนและประโยคที่ต้องการฝึกอ่าน</h2>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <select id="studioLessonSelect" onchange="Studio.selectLesson(this.value)" class="bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-2.5 font-bold text-sm focus:border-brand-blue focus:outline-none"></select>
+                        <button onclick="Studio.prevItem()" class="bg-slate-100 hover:bg-slate-200 px-3.5 py-2.5 rounded-xl font-bold text-sm"><i class="fa-solid fa-chevron-left"></i> ก่อนหน้า</button>
+                        <span id="studioItemCounter" class="font-extrabold text-sm px-2">1 / 5</span>
+                        <button onclick="Studio.nextItem()" class="bg-slate-100 hover:bg-slate-200 px-3.5 py-2.5 rounded-xl font-bold text-sm">ถัดไป <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Target Reading Card -->
+                <div class="my-6 bg-gradient-to-br from-sky-50 to-indigo-50 rounded-3xl p-6 md:p-10 border-2 border-brand-blue/30 text-center relative">
+                    <div class="text-sm md:text-base font-bold text-brand-blue uppercase tracking-wider mb-2">ข้อความเป้าหมายที่ต้องอ่านออกเสียง</div>
+                    <div id="studioTargetEmoji" class="text-6xl md:text-7xl mb-4">🐘</div>
+                    <div id="studioTargetText" class="reading-text text-4xl md:text-6xl font-extrabold text-slate-900 tracking-wide py-3 leading-relaxed">
+                        ช้างตัวใหญ่เดินเข้าป่า
+                    </div>
+                    <!-- แถบปุ่มกดฟังเสียงทีละคำ/พยางค์ -->
+                    <div class="mt-5">
+                        <div class="text-sm md:text-base font-bold text-slate-600 mb-2.5"><i class="fa-solid fa-ear-listen text-brand-blue"></i> คลิกที่คำเพื่อฟังเสียงอ่านชัด ๆ ทีละคำ:</div>
+                        <div id="studioWordButtons" class="flex flex-wrap justify-center gap-3"></div>
+                    </div>
+                    <div id="studioTargetHint" class="text-base md:text-lg font-semibold text-slate-600 mt-4">คำแนะนำ: อ่านออกเสียงให้ชัดเจนทีละคำ</div>
+
+                    <!-- Comprehension Question Box (For P3 lessons or story lessons) -->
+                    <div id="studioQuestionBox" class="hidden mt-8 pt-6 border-t-2 border-sky-200 text-left max-w-3xl mx-auto">
+                        <div class="text-lg md:text-xl font-extrabold text-brand-darkBlue mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-question text-brand-orange text-2xl"></i> คำถามชวนคิดจากเรื่องที่อ่าน:
+                        </div>
+                        <p id="studioQuestionText" class="reading-text text-2xl md:text-3xl font-extrabold text-slate-900 mb-4 leading-snug"></p>
+                        <div id="studioQuestionOptions" class="grid sm:grid-cols-2 gap-3.5"></div>
+                    </div>
+
+                    <!-- TTS Controls -->
+                    <div class="mt-8 flex flex-wrap justify-center gap-3.5">
+                        <button onclick="Studio.speakTarget(0.9)" class="bg-brand-blue hover:bg-brand-darkBlue text-white font-extrabold px-6 py-3.5 rounded-2xl btn-kid text-base md:text-lg flex items-center gap-2.5">
+                            <i class="fa-solid fa-volume-high text-2xl"></i> ฟังเสียงครูอ่าน (ปกติ)
+                        </button>
+                        <button onclick="Studio.speakTarget(0.65)" class="bg-sky-100 hover:bg-sky-200 text-brand-darkBlue font-extrabold px-6 py-3.5 rounded-2xl btn-kid text-base md:text-lg flex items-center gap-2.5">
+                            <i class="fa-solid fa-turtle text-2xl"></i> ฟังแบบช้า ๆ ชัด ๆ
+                        </button>
+                        <button onclick="Studio.speakWordByWord()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-extrabold px-6 py-3.5 rounded-2xl btn-kid text-base md:text-lg flex items-center gap-2.5">
+                            <i class="fa-solid fa-spell-check text-2xl"></i> ฟังอ่านเน้นทีละคำ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notice on Strict Separation of 3 Steps -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 text-xs text-amber-900 flex items-center gap-3 mb-6">
+                    <i class="fa-solid fa-circle-info text-amber-500 text-xl shrink-0"></i>
+                    <div>
+                        <strong>ระบบตรวจสอบมาตรฐาน 3 ขั้นตอนแยกอิสระ:</strong> 
+                        (1) บันทึกเสียงและถอดเสียงพูดภาษาไทย ➔ (2) กดปุ่มตรวจประเมินความถูกต้องคำต่อคำจริง ➔ (3) ขอคำแนะนำและวิเคราะห์เชิงลึกด้วย AI (ระบบจะไม่แสดงคะแนนหรือผลการประเมินล่วงหน้าจนกว่าจะกดตรวจจริง)
+                    </div>
+                </div>
+
+                <!-- 3 DISTINCT STAGES -->
+                <div class="grid lg:grid-cols-3 gap-6">
+                    
+                    <!-- STAGE 1: AUDIO RECORDING & SPEECH-TO-TEXT (การถอดเสียง) -->
+                    <div class="bg-slate-50 rounded-3xl p-5 border-2 border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-brand-orange text-white text-xs font-extrabold px-3 py-1 rounded-full">ขั้นตอนที่ 1</span>
+                                <span id="recStatusBadge" class="text-xs font-bold text-slate-500">พร้อมบันทึกเสียง</span>
+                            </div>
+                            <h3 class="text-lg font-extrabold text-slate-800 mb-1">บันทึกเสียง & ถอดข้อความ (STT)</h3>
+                            <p class="text-xs text-slate-500 mb-4">กดปุ่มไมโครโฟนเพื่ออ่านออกเสียง ระบบจะบันทึกไฟล์เสียงและถอดเสียงพูดภาษาไทย</p>
+
+                            <!-- Microphone & Recording Controls -->
+                            <div class="flex flex-col items-center my-4">
+                                <button id="btnRecordToggle" onclick="Studio.toggleRecording()" class="w-24 h-24 rounded-full bg-brand-orange hover:bg-orange-600 text-white text-4xl shadow-lg flex items-center justify-center btn-kid">
+                                    <i id="recMicIcon" class="fa-solid fa-microphone"></i>
+                                </button>
+                                <p id="recTimerText" class="text-xs font-bold text-slate-600 mt-2">คลิกเพื่อเริ่มอัดเสียงอ่าน</p>
+                            </div>
+
+                            <!-- Recorded Audio Player -->
+                            <div id="recordedAudioBox" class="hidden bg-white p-3 rounded-2xl border border-slate-200 mb-3">
+                                <div class="text-xs font-bold text-slate-600 mb-1 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-headphones text-brand-blue"></i> ไฟล์เสียงของนักเรียน:</span>
+                                    <button onclick="Studio.uploadAudioToDrive()" class="text-brand-blue hover:underline text-xs font-bold"><i class="fa-brands fa-google-drive"></i> ส่งเข้า Google Drive</button>
+                                </div>
+                                <audio id="studentAudioPlayer" controls class="w-full h-9"></audio>
+                            </div>
+
+                            <!-- Editable Transcript Box (Allows manual test or real STT) -->
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1.5">ข้อความที่ถอดได้จากเสียงพูด (แก้ไข/ทดสอบได้):</label>
+                                <textarea id="sttTranscriptInput" rows="2" placeholder="ยังไม่มีข้อความที่ถอดเสียง..." oninput="Studio.onTranscriptChanged()" class="w-full p-3.5 rounded-xl border-2 border-slate-200 focus:border-brand-blue focus:outline-none font-bold text-slate-800 reading-text text-xl md:text-2xl"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 pt-3 border-t border-slate-200 flex flex-wrap gap-2">
+                            <button onclick="Studio.simulateTranscript('exact')" class="text-sm bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-bold">จำลองอ่านถูก 100%</button>
+                            <button onclick="Studio.simulateTranscript('partial')" class="text-sm bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-bold">จำลองอ่านผิดบางคำ</button>
+                        </div>
+                    </div>
+
+                    <!-- STAGE 2: ACCURACY EVALUATION (การประเมินความถูกต้อง) -->
+                    <div class="bg-slate-50 rounded-3xl p-5 border-2 border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-brand-blue text-white text-xs font-extrabold px-3 py-1 rounded-full">ขั้นตอนที่ 2</span>
+                                <span id="evalStatusBadge" class="text-xs font-bold text-slate-400">รอการตรวจจริง</span>
+                            </div>
+                            <h3 class="text-lg font-extrabold text-slate-800 mb-1">ประเมินความถูกต้องของคำอ่าน</h3>
+                            <p class="text-xs text-slate-500 mb-4">เปรียบเทียบข้อความที่ถอดเสียงกับต้นฉบับ เพื่อหาคำที่อ่านถูกต้อง อ่านผิด หรือตกหล่น</p>
+
+                            <button id="btnRunEvaluation" onclick="Studio.evaluateReadingAccuracy()" class="w-full bg-brand-blue hover:bg-brand-darkBlue text-white font-extrabold py-3.5 rounded-2xl btn-kid mb-4 text-base flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i> ตรวจความถูกต้องของการอ่าน
+                            </button>
+
+                            <!-- Placeholder before evaluation -->
+                            <div id="evalEmptyState" class="bg-white rounded-2xl p-6 text-center border border-dashed border-slate-300 text-slate-400">
+                                <i class="fa-solid fa-clipboard-question text-3xl mb-2"></i>
+                                <p class="text-sm font-bold">ยังไม่ได้ประเมินความถูกต้อง<br>กรุณาถอดเสียงในขั้นตอนที่ 1 แล้วกดปุ่มตรวจ</p>
+                            </div>
+
+                            <!-- Actual Evaluation Result Box (Hidden until evaluated) -->
+                            <div id="evalResultBox" class="hidden space-y-3">
+                                <div class="bg-white p-3.5 rounded-2xl border border-slate-200 flex items-center justify-between">
+                                    <div>
+                                        <div class="text-xs text-slate-500 font-bold">ความแม่นยำในการอ่าน</div>
+                                        <div id="evalAccuracyScore" class="text-3xl font-extrabold text-brand-blue">0%</div>
+                                    </div>
+                                    <div id="evalStarsEarned" class="text-2xl text-brand-yellow"></div>
+                                </div>
+
+                                <div class="bg-white p-3.5 rounded-2xl border border-slate-200">
+                                    <div class="text-sm font-bold text-slate-600 mb-2">วิเคราะห์คำต่อคำ (เขียว=ถูก, แดง=ตกหล่น/อ่านผิด):</div>
+                                    <div id="evalWordDiffContainer" class="flex flex-wrap gap-2 reading-text text-xl md:text-2xl font-bold"></div>
+                                </div>
+
+                                <div class="bg-rose-50 p-3.5 rounded-2xl border border-rose-200 text-sm">
+                                    <span class="font-extrabold text-rose-700"><i class="fa-solid fa-triangle-exclamation"></i> คำที่อ่านผิดหรือตกหล่น:</span>
+                                    <p id="evalMissedWordsText" class="text-rose-900 font-bold mt-1 text-base">-</p>
+                                </div>
+
+                                <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-200 text-sm">
+                                    <span class="font-extrabold text-emerald-800"><i class="fa-solid fa-lightbulb"></i> แบบฝึกหัดที่ระบบแนะนำ:</span>
+                                    <p id="evalRecommendedExercise" class="text-emerald-900 font-bold mt-1 text-base">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="btnSaveAttempt" onclick="Studio.saveReadingRecord()" disabled class="mt-4 w-full bg-brand-green disabled:bg-slate-300 text-white font-extrabold py-3 rounded-xl transition text-base">
+                            <i class="fa-solid fa-floppy-disk"></i> บันทึกผลการอ่านและรับดาว
+                        </button>
+                    </div>
+
+                    <!-- STAGE 3: AI ANALYSIS (การวิเคราะห์ด้วย AI / Gemini API via GAS) -->
+                    <div class="bg-slate-50 rounded-3xl p-5 border-2 border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-purple-600 text-white text-xs font-extrabold px-3 py-1 rounded-full">ขั้นตอนที่ 3</span>
+                                <span id="aiStatusBadge" class="text-xs font-bold text-slate-400">แยกอิสระจากผลตรวจพื้นฐาน</span>
+                            </div>
+                            <h3 class="text-lg font-extrabold text-slate-800 mb-1">พี่ฮูก AI วิเคราะห์การอ่านเพิ่มเติม</h3>
+                            <p class="text-xs text-slate-500 mb-4">ส่งผลตรวจไปยัง Gemini AI (ผ่าน Google Apps Script Backend เพื่อไม่เก็บ API Key ใน Frontend)</p>
+
+                            <button id="btnRunAiAnalysis" onclick="Studio.requestAiAnalysis()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-extrabold py-3 rounded-2xl btn-kid mb-4 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> วิเคราะห์เชิงลึกด้วย AI
+                            </button>
+
+                            <!-- Empty State before AI is triggered -->
+                            <div id="aiEmptyState" class="bg-white rounded-2xl p-6 text-center border border-dashed border-slate-300 text-slate-400">
+                                <i class="fa-solid fa-robot text-3xl mb-2"></i>
+                                <p class="text-xs font-bold">ยังไม่ได้เรียกใช้การวิเคราะห์จาก AI<br>ต้องผ่านการตรวจความถูกต้องในขั้นตอนที่ 2 ก่อน</p>
+                            </div>
+
+                            <!-- AI Output Box -->
+                            <div id="aiResultBox" class="hidden bg-white rounded-2xl p-4 border-2 border-purple-200 space-y-2.5 text-xs">
+                                <div class="flex items-center gap-2 font-extrabold text-purple-800 text-sm">
+                                    <span>🦉 คำแนะนำจากพี่ฮูก AI:</span>
+                                </div>
+                                <p id="aiFeedbackText" class="text-slate-700 leading-relaxed font-medium"></p>
+                                <div class="pt-2 border-t border-slate-100">
+                                    <span class="font-bold text-purple-700">เทคนิคการออกเสียงเฉพาะจุด:</span>
+                                    <p id="aiPhoneticTip" class="text-slate-600 mt-0.5"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-[11px] text-slate-400 mt-3 flex items-center gap-1.5">
+                            <i class="fa-solid fa-lock"></i> ปลอดภัย: เรียก Gemini API ผ่าน GAS Proxy เท่านั้น
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 4. GAMES SYSTEM (5 MINI-GAMES) ==================== -->
+        <section id="view-games" class="hidden space-y-6">
+            <!-- Games Header & Mode Selector -->
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-purple-100">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-gamepad text-purple-600"></i> อาณาจักรเกมฝึกอ่านภาษาไทย (5 เกมหรรษา)
+                        </h2>
+                        <p class="text-sm text-slate-500">เล่นเกมทบทวนคำศัพท์ สะสมดาว (⭐) และเหรียญ (🪙) เพื่อใช้ปลดล็อกบทเรียนพิเศษ!</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-purple-50 px-4 py-2 rounded-2xl border border-purple-200">
+                        <span class="text-xs font-bold text-purple-800">คะแนนเกมรอบนี้:</span>
+                        <span id="gameSessionScore" class="text-xl font-extrabold text-purple-600">0</span>
+                    </div>
+                </div>
+
+                <!-- 5 Game Mode Buttons -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <button onclick="Games.startGame('match')" id="gameTab-match" class="game-tab p-3.5 rounded-2xl border-2 font-extrabold text-sm flex flex-col items-center gap-1.5 transition">
+                        <i class="fa-solid fa-images text-2xl text-brand-blue"></i>
+                        <span>1. จับคู่คำกับภาพ</span>
+                    </button>
+                    <button onclick="Games.startGame('syllable')" id="gameTab-syllable" class="game-tab p-3.5 rounded-2xl border-2 font-extrabold text-sm flex flex-col items-center gap-1.5 transition">
+                        <i class="fa-solid fa-layer-group text-2xl text-brand-orange"></i>
+                        <span>2. เรียงพยางค์</span>
+                    </button>
+                    <button onclick="Games.startGame('fill')" id="gameTab-fill" class="game-tab p-3.5 rounded-2xl border-2 font-extrabold text-sm flex flex-col items-center gap-1.5 transition">
+                        <i class="fa-solid fa-pen-to-square text-2xl text-brand-green"></i>
+                        <span>3. เติมคำในช่องว่าง</span>
+                    </button>
+                    <button onclick="Games.startGame('quiz')" id="gameTab-quiz" class="game-tab p-3.5 rounded-2xl border-2 font-extrabold text-sm flex flex-col items-center gap-1.5 transition">
+                        <i class="fa-solid fa-list-check text-2xl text-purple-600"></i>
+                        <span>4. เลือกคำตอบ</span>
+                    </button>
+                    <button onclick="Games.startGame('readAloud')" id="gameTab-readAloud" class="game-tab p-3.5 rounded-2xl border-2 font-extrabold text-sm flex flex-col items-center gap-1.5 transition col-span-2 sm:col-span-1">
+                        <i class="fa-solid fa-microphone text-2xl text-rose-500"></i>
+                        <span>5. อ่านให้ถูกต้อง</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Game Arena -->
+            <div id="gameArenaContainer" class="bg-white rounded-3xl p-6 md:p-8 shadow-md border-2 border-slate-100 min-h-[380px] flex flex-col justify-between"></div>
+        </section>
+
+        <!-- ==================== 5. STUDENT READING HISTORY VIEW ==================== -->
+        <section id="view-history" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-amber-100">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> ประวัติการฝึกอ่านและคะแนนสะสม
+                        </h2>
+                        <p class="text-sm text-slate-500">แสดงเฉพาะข้อมูลของบัญชีนักเรียนที่เข้าสู่ระบบอยู่ในขณะนี้เท่านั้น</p>
+                    </div>
+                    <button onclick="App.navigate('studio')" class="bg-brand-orange text-white font-bold px-4 py-2.5 rounded-xl btn-kid text-sm">
+                        <i class="fa-solid fa-microphone"></i> ไปฝึกอ่านเพิ่ม
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase">
+                                <th class="p-3.5 rounded-l-xl">วัน-เวลา</th>
+                                <th class="p-3.5">บทเรียน</th>
+                                <th class="p-3.5">ข้อความต้นฉบับ</th>
+                                <th class="p-3.5">ข้อความที่ถอดเสียงได้</th>
+                                <th class="p-3.5">คำที่อ่านผิด/ตกหล่น</th>
+                                <th class="p-3.5 text-center">ความแม่นยำ</th>
+                                <th class="p-3.5 rounded-r-xl text-center">ฟังเสียง</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentHistoryTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 6. TEACHER SYSTEM VIEW ==================== -->
+        <section id="view-teacher" class="hidden space-y-6">
+            <!-- Teacher Overview Header -->
+            <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-6 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="bg-white/20 text-xs font-extrabold px-3 py-1 rounded-full">ระบบครูผู้สอน - โรงเรียนบึงงามพัฒนา</span>
+                    <h2 class="text-2xl font-extrabold mt-1">Dashboard ติดตามพัฒนาการการอ่านของนักเรียน</h2>
+                    <p class="text-emerald-100 text-sm">จัดการข้อมูลนักเรียน ตรวจฟังเสียงอ่าน วิเคราะห์คำที่มักอ่านผิด และจัดกลุ่มตามความสามารถ</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="Teacher.openAddStudentModal()" class="bg-brand-yellow text-slate-900 font-extrabold px-4 py-2.5 rounded-xl btn-kid text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-plus"></i> เพิ่มนักเรียนใหม่
+                    </button>
+                    <button onclick="Teacher.exportReportCSV()" class="bg-white text-emerald-800 font-extrabold px-4 py-2.5 rounded-xl btn-kid text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-csv"></i> ออกรายงานพัฒนาการอ่าน (CSV)
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="text-xs text-slate-500 font-bold">นักเรียนทั้งหมด</div>
+                    <div id="tStatTotalStudents" class="text-3xl font-extrabold text-brand-blue mt-1">0 คน</div>
+                </div>
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="text-xs text-slate-500 font-bold">ความแม่นยำการอ่านเฉลี่ย</div>
+                    <div id="tStatAvgAccuracy" class="text-3xl font-extrabold text-brand-green mt-1">0%</div>
+                </div>
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="text-xs text-slate-500 font-bold">จำนวนบันทึกการอ่านทั้งหมด</div>
+                    <div id="tStatTotalLogs" class="text-3xl font-extrabold text-brand-orange mt-1">0 ครั้ง</div>
+                </div>
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="text-xs text-slate-500 font-bold">คำที่นักเรียนอ่านผิดบ่อยที่สุด</div>
+                    <div id="tStatCommonMistake" class="text-lg font-extrabold text-rose-600 mt-1 truncate">-</div>
+                </div>
+            </div>
+
+            <!-- Student Management & Individual Score Table -->
+            <div class="grid lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-md border border-slate-100">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                        <h3 class="text-lg font-extrabold text-slate-800"><i class="fa-solid fa-users text-brand-blue"></i> รายชื่อนักเรียนและคะแนนรายบุคคล</h3>
+                        <select id="teacherGradeFilter" onchange="Teacher.renderDashboard()" class="bg-slate-100 px-3 py-1.5 rounded-xl text-xs font-bold">
+                            <option value="ALL">ทุกชั้นเรียน (ป.1-ป.3)</option>
+                            <option value="P1">เฉพาะ ป.1</option>
+                            <option value="P2">เฉพาะ ป.2</option>
+                            <option value="P3">เฉพาะ ป.3</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 text-xs">
+                                    <th class="p-3 rounded-l-xl">รหัส</th>
+                                    <th class="p-3">ชื่อ-นามสกุล</th>
+                                    <th class="p-3">ชั้น</th>
+                                    <th class="p-3">ดาว ⭐</th>
+                                    <th class="p-3">คะแนนเฉลี่ย</th>
+                                    <th class="p-3">กลุ่มความสามารถ</th>
+                                    <th class="p-3 rounded-r-xl text-right">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacherStudentTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Ability Grouping Panel -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 space-y-4">
+                    <h3 class="text-lg font-extrabold text-slate-800"><i class="fa-solid fa-layer-group text-emerald-600"></i> จัดกลุ่มนักเรียนตามความสามารถ</h3>
+                    <div id="teacherGroupsContainer" class="space-y-3 text-sm"></div>
+                </div>
+            </div>
+
+            <!-- Audio Recordings & Mispronounced Words Review -->
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100">
+                <h3 class="text-lg font-extrabold text-slate-800 mb-4">
+                    <i class="fa-solid fa-headphones-simple text-brand-orange"></i> ตรวจฟังไฟล์เสียงของนักเรียน & คำที่อ่านผิดล่าสุด
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs">
+                                <th class="p-3 rounded-l-xl">นักเรียน</th>
+                                <th class="p-3">บทเรียน</th>
+                                <th class="p-3">ข้อความที่อ่าน</th>
+                                <th class="p-3">คำที่อ่านผิด/ตกหล่น</th>
+                                <th class="p-3">ความถูกต้อง</th>
+                                <th class="p-3 rounded-r-xl">ฟังไฟล์เสียง</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherAudioLogsBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 7. ADMIN SYSTEM & DEPLOY GUIDE VIEW ==================== -->
+        <section id="view-admin" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-indigo-700 to-slate-800 rounded-3xl p-6 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="bg-amber-400 text-slate-900 text-xs font-extrabold px-3 py-1 rounded-full">ADMINISTRATION & SYSTEM DATA</span>
+                    <h2 class="text-2xl font-extrabold mt-1">ระบบผู้ดูแลระบบ (Admin) & คู่มือการติดตั้ง Backend</h2>
+                    <p class="text-indigo-200 text-sm">จัดการบัญชี จัดการชั้นเรียน บทเรียน แบบทดสอบ ข้อมูลระบบ และโค้ด Google Apps Script</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="Admin.exportFullDatabaseJSON()" class="bg-white text-slate-900 font-bold px-4 py-2 rounded-xl text-xs">
+                        <i class="fa-solid fa-download"></i> สำรองข้อมูลระบบ (JSON)
+                    </button>
+                    <button onclick="Admin.resetDemoData()" class="bg-rose-500 hover:bg-rose-600 text-white font-bold px-4 py-2 rounded-xl text-xs">
+                        <i class="fa-solid fa-rotate"></i> รีเซ็ตข้อมูลเริ่มต้น
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin Sub-Tabs -->
+            <div class="flex flex-wrap gap-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+                <button onclick="Admin.switchTab('lessons')" id="adminTabBtn-lessons" class="admin-tab px-4 py-2 rounded-xl font-bold text-sm bg-indigo-600 text-white">1. จัดการบทเรียน & แบบทดสอบ</button>
+                <button onclick="Admin.switchTab('accounts')" id="adminTabBtn-accounts" class="admin-tab px-4 py-2 rounded-xl font-bold text-sm text-slate-600">2. จัดการบัญชีและชั้นเรียน</button>
+                <button onclick="Admin.switchTab('deploy')" id="adminTabBtn-deploy" class="admin-tab px-4 py-2 rounded-xl font-bold text-sm text-slate-600">3. โค้ด Google Apps Script & คู่มือ Deploy GitHub Pages</button>
+            </div>
+
+            <!-- Admin Tab 1: Manage Lessons & Quizzes -->
+            <div id="adminPanel-lessons" class="grid lg:grid-cols-3 gap-6">
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100">
+                    <h3 class="text-lg font-extrabold mb-4 text-indigo-900"><i class="fa-solid fa-folder-plus"></i> เพิ่มบทเรียน / แบบฝึกอ่านใหม่</h3>
+                    <form onsubmit="Admin.handleAddLesson(event)" class="space-y-3 text-sm">
+                        <div>
+                            <label class="font-bold block mb-1">ระดับชั้นเรียน</label>
+                            <select id="admLessonGrade" class="w-full p-2.5 border rounded-xl font-bold">
+                                <option value="P1">ชั้นประถมศึกษาปีที่ 1 (ป.1)</option>
+                                <option value="P2">ชั้นประถมศึกษาปีที่ 2 (ป.2)</option>
+                                <option value="P3">ชั้นประถมศึกษาปีที่ 3 (ป.3)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="font-bold block mb-1">หมวดหมู่บทเรียน</label>
+                            <input id="admLessonCategory" required placeholder="เช่น คำควบกล้ำ, การอ่านจับใจความ" class="w-full p-2.5 border rounded-xl">
+                        </div>
+                        <div>
+                            <label class="font-bold block mb-1">ชื่อบทเรียน</label>
+                            <input id="admLessonTitle" required placeholder="เช่น บทเรียนพิเศษ: นิทานอีสานบ้านเรา" class="w-full p-2.5 border rounded-xl">
+                        </div>
+                        <div>
+                            <label class="font-bold block mb-1">คำ/ประโยคฝึกอ่าน (คั่นด้วยเครื่องหมายจุลภาค ,)</label>
+                            <textarea id="admLessonItems" rows="3" required placeholder="กวางป่าเดินมา, แม่ไก่ขันยามเช้า, เด็กดีตั้งใจเรียน" class="w-full p-2.5 border rounded-xl"></textarea>
+                        </div>
+                        <div>
+                            <label class="font-bold block mb-1">คำถามท้ายบท (แบบทดสอบ)</label>
+                            <input id="admLessonQuestion" placeholder="เช่น ใครขันในยามเช้า?" class="w-full p-2.5 border rounded-xl">
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl btn-kid">
+                            <i class="fa-solid fa-plus"></i> บันทึกบทเรียนเข้าระบบ
+                        </button>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-md border border-slate-100">
+                    <h3 class="text-lg font-extrabold mb-4 text-slate-800">รายการบทเรียนในระบบทั้งหมด</h3>
+                    <div id="adminLessonsList" class="space-y-2.5 max-h-[500px] overflow-y-auto pr-2"></div>
+                </div>
+            </div>
+
+            <!-- Admin Tab 2: Manage Accounts & Classrooms -->
+            <div id="adminPanel-accounts" class="hidden bg-white rounded-3xl p-6 shadow-md border border-slate-100 space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                    <h3 class="text-lg font-extrabold text-slate-800">บัญชีผู้ใช้งานและห้องเรียนทั้งหมด</h3>
+                    <button onclick="Teacher.openAddStudentModal()" class="bg-brand-blue text-white px-4 py-2 rounded-xl text-xs font-bold">
+                        <i class="fa-solid fa-plus"></i> เพิ่มบัญชีนักเรียน
+                    </button>
+                </div>
+                <div id="adminAccountsList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            </div>
+
+            <!-- Admin Tab 3: Backend Code.gs & Complete Deployment Guide -->
+            <div id="adminPanel-deploy" class="hidden space-y-6">
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-indigo-900"><i class="fa-brands fa-google-drive text-brand-green"></i> โค้ด Backend: Google Apps Script (Code.gs) ฉบับสมบูรณ์</h3>
+                            <p class="text-xs text-slate-500">เชื่อมต่อ Google Sheets เป็น Database + Google Drive เก็บไฟล์เสียง + Gemini API Proxy (ไม่ต้องใส่ API Key ใน Frontend)</p>
+                        </div>
+                        <button onclick="Admin.copyGasCode()" class="bg-brand-green text-white font-bold px-4 py-2.5 rounded-xl btn-kid text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-copy"></i> คัดลอกโค้ด Code.gs
+                        </button>
+                    </div>
+                    <pre id="gasCodeBlock" class="bg-slate-900 text-emerald-300 p-4 rounded-2xl text-xs overflow-x-auto max-h-96 leading-relaxed font-mono select-all">/**
+ * THAI READING ADVENTURE - Google Apps Script Backend API (Code.gs)
+ * โรงเรียนบึงงามพัฒนา | Database: Google Sheets | Storage: Google Drive | AI: Gemini API
+ */
+
+const DRIVE_FOLDER_NAME = "THAI_READING_AUDIO_FILES";
+
+function doGet(e) {
+  const action = e.parameter.action || "ping";
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  ensureSheetsExist(ss);
+
+  if (action === "getInitialData") {
+    return jsonResponse({
+      status: "ok",
+      students: getSheetRows(ss.getSheetByName("Students")),
+      lessons: getSheetRows(ss.getSheetByName("Lessons"))
+    });
+  }
+  return jsonResponse({ status: "ok", message: "THAI READING ADVENTURE API Ready" });
+}
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+    const action = body.action;
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    ensureSheetsExist(ss);
+
+    if (action === "saveReadingLog") {
+      const logSheet = ss.getSheetByName("ReadingLogs");
+      let audioDriveUrl = "";
+      if (body.audioBase64) {
+        audioDriveUrl = saveAudioToDrive(body.studentId, body.lessonId, body.audioBase64);
+      }
+      logSheet.appendRow([
+        new Date().toISOString(),
+        body.studentId,
+        body.studentName,
+        body.lessonId,
+        body.targetText,
+        body.transcript,
+        body.accuracy,
+        (body.missedWords || []).join(", "),
+        audioDriveUrl
+      ]);
+      return jsonResponse({ status: "ok", audioDriveUrl: audioDriveUrl });
+    }
+
+    if (action === "analyzeReadingAI") {
+      // เรียกใช้ Gemini API โดยดึง API Key จาก Script Properties (ไม่เปิดเผยใน Frontend)
+      const apiKey = PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY");
+      if (!apiKey) {
+        return jsonResponse({ status: "error", message: "กรุณาตั้งค่า GEMINI_API_KEY ใน Script Properties" });
+      }
+      const prompt = `คุณคือครูภาษาไทยระดับประถมศึกษา วิเคราะห์การอ่านของนักเรียนชั้น ${body.grade}:
+ข้อความต้นฉบับ: "${body.targetText}"
+ข้อความที่นักเรียนอ่านได้: "${body.transcript}"
+คำที่ตกหล่น: "${(body.missedWords || []).join(", ")}"
+กรุณาให้คำชม คำแนะนำการออกเสียงที่เข้าใจง่ายสำหรับเด็ก และแบบฝึกหัดสั้นๆ`;
+
+      const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+      const res = UrlFetchApp.fetch(url, {
+        method: "post",
+        contentType: "application/json",
+        payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      });
+      const data = JSON.parse(res.getContentText());
+      const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "พยายามได้ดีมากจ้า!";
+      return jsonResponse({ status: "ok", aiFeedback: aiText });
+    }
+
+    return jsonResponse({ status: "ok" });
+  } catch (err) {
+    return jsonResponse({ status: "error", message: err.toString() });
+  }
+}
+
+function saveAudioToDrive(studentId, lessonId, base64Data) {
+  const folders = DriveApp.getFoldersByName(DRIVE_FOLDER_NAME);
+  const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(DRIVE_FOLDER_NAME);
+  const cleanBase64 = base64Data.split(",").pop();
+  const blob = Utilities.newBlob(Utilities.base64Decode(cleanBase64), "audio/webm", `${studentId}_${lessonId}_${Date.now()}.webm`);
+  const file = folder.createFile(blob);
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  return file.getUrl();
+}
+
+function ensureSheetsExist(ss) {
+  ["Students", "Lessons", "ReadingLogs"].forEach(name => {
+    if (!ss.getSheetByName(name)) ss.insertSheet(name);
+  });
+}
+
+function getSheetRows(sheet) {
+  const values = sheet.getDataRange().getValues();
+  if (values.length <= 1) return [];
+  const headers = values[0];
+  return values.slice(1).map(row => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = row[i]);
+    return obj;
+  });
+}
+
+function jsonResponse(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}</pre>
+                </div>
+
+                <!-- Step-by-step Deployment Manual -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100">
+                    <h3 class="text-xl font-extrabold text-slate-800 mb-4"><i class="fa-brands fa-github"></i> คู่มือการติดตั้งและเผยแพร่ผ่าน GitHub Pages และ Google Apps Script</h3>
+                    <div class="grid md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <div class="font-extrabold text-brand-blue mb-1">1. ตั้งค่า Google Sheets & GAS</div>
+                            <ol class="list-decimal list-inside space-y-1 text-xs text-slate-600">
+                                <li>สร้าง Google Sheets ใหม่ ไปที่เมนู <strong>Extensions ➔ Apps Script</strong></li>
+                                <li>วางโค้ด <code>Code.gs</code> ด้านบนแล้วกดบันทึก</li>
+                                <li>ตั้งค่า <code>GEMINI_API_KEY</code> ใน Project Settings ➔ Script Properties</li>
+                                <li>กด <strong>Deploy ➔ New deployment ➔ Web app</strong> เลือกเป็น <em>Anyone</em> แล้วคัดลอก Web App URL</li>
+                            </ol>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <div class="font-extrabold text-brand-orange mb-1">2. เชื่อมต่อ API Endpoint ในเว็บ</div>
+                            <ol class="list-decimal list-inside space-y-1 text-xs text-slate-600">
+                                <li>คลิกปุ่มไอคอนก้อนเมฆ <i class="fa-solid fa-cloud-arrow-up"></i> มุมขวาบนของเว็บแอป</li>
+                                <li>นำ Web App URL จาก Google Apps Script มาวาง</li>
+                                <li>สามารถเปลี่ยน API Endpoint ได้ตลอดเวลาโดยไม่ต้องแก้โค้ดใหม่</li>
+                            </ol>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <div class="font-extrabold text-brand-green mb-1">3. เผยแพร่ขึ้น GitHub Pages</div>
+                            <ol class="list-decimal list-inside space-y-1 text-xs text-slate-600">
+                                <li>สร้าง Repository บน GitHub แล้วอัปโหลดไฟล์ <code>index.html</code></li>
+                                <li>ไปที่ <strong>Settings ➔ Pages</strong> เลือก Branch <code>main</code> แล้วกด Save</li>
+                                <li>เปิดใช้งานผ่าน HTTPS เพื่อรองรับไมโครโฟน (Web Speech & MediaRecorder)</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODAL: API ENDPOINT CONFIGURATION ==================== -->
+    <div id="apiConfigModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-brand-blue/20">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-extrabold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-bolt text-brand-blue"></i> ตั้งค่า Backend API (Google Apps Script)
+                </h3>
+                <button onclick="App.closeModal('apiConfigModal')" class="text-slate-400 hover:text-slate-700 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">
+                ออกแบบให้สามารถเปลี่ยน API Endpoint ได้ภายหลัง เมื่อใส่ URL ของ Google Apps Script Web App ระบบจะส่งข้อมูลผลการเรียนและไฟล์เสียงขึ้น Google Sheets และ Google Drive อัตโนมัติ
+            </p>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Google Apps Script Web App URL:</label>
+                    <input id="apiEndpointInput" type="url" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-brand-blue focus:outline-none text-sm font-mono">
+                </div>
+                <div class="flex items-center justify-between gap-2 pt-2">
+                    <button onclick="ApiService.testConnection()" class="bg-sky-100 hover:bg-sky-200 text-brand-darkBlue font-bold px-4 py-2.5 rounded-xl text-xs">
+                        <i class="fa-solid fa-plug-circle-check"></i> ทดสอบการเชื่อมต่อ
+                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="App.closeModal('apiConfigModal')" class="px-4 py-2.5 rounded-xl font-bold text-xs text-slate-500 hover:bg-slate-100">ยกเลิก</button>
+                        <button onclick="ApiService.saveEndpoint()" class="bg-brand-blue hover:bg-brand-darkBlue text-white font-bold px-5 py-2.5 rounded-xl text-xs btn-kid">บันทึก Endpoint</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: ADD NEW STUDENT (TEACHER/ADMIN) ==================== -->
+    <div id="addStudentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-extrabold text-slate-800"><i class="fa-solid fa-user-plus text-brand-green"></i> เพิ่มบัญชีนักเรียนใหม่</h3>
+                <button onclick="App.closeModal('addStudentModal')" class="text-slate-400 hover:text-slate-700 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="Teacher.handleSaveNewStudent(event)" class="space-y-3 text-sm">
+                <div>
+                    <label class="font-bold block mb-1">รหัสนักเรียน</label>
+                    <input id="newStuId" required placeholder="เช่น 1005" class="w-full p-2.5 border-2 rounded-xl font-bold">
+                </div>
+                <div>
+                    <label class="font-bold block mb-1">ชื่อ - นามสกุล</label>
+                    <input id="newStuName" required placeholder="เช่น ด.ญ. มานี มีตา" class="w-full p-2.5 border-2 rounded-xl font-bold">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="font-bold block mb-1">ระดับชั้น</label>
+                        <select id="newStuGrade" class="w-full p-2.5 border-2 rounded-xl font-bold">
+                            <option value="P1">ป.1</option>
+                            <option value="P2">ป.2</option>
+                            <option value="P3">ป.3</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">รหัส PIN 4 หลัก</label>
+                        <input id="newStuPin" required value="1234" maxlength="8" class="w-full p-2.5 border-2 rounded-xl font-bold">
+                    </div>
+                </div>
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" onclick="App.closeModal('addStudentModal')" class="px-4 py-2 rounded-xl font-bold text-slate-500">ยกเลิก</button>
+                    <button type="submit" class="bg-brand-green text-white font-bold px-5 py-2.5 rounded-xl btn-kid">บันทึกข้อมูลนักเรียน</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-10 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div><strong>THAI READING ADVENTURE</strong> • โรงเรียนบึงงามพัฒนา (แพลตฟอร์มพัฒนาทักษะการอ่านภาษาไทย ป.1–ป.3)</div>
+            <div>รองรับ GitHub Pages • Google Apps Script API • Google Sheets & Drive</div>
+        </div>
+    </footer>
+
+    <!-- ==================== APPLICATION JAVASCRIPT ARCHITECTURE ==================== -->
+    <script>
+        /**
+         * ============================================================================
+         * MODULE 1: INITIAL CURRICULUM DATA & SYSTEM STATE (ป.1 - ป.3 ครบทุกหมวดหมู่)
+         * พร้อมกำกับคำอ่าน (phonetic) เพื่อให้ระบบ TTS ออกเสียงภาษาไทยถูกต้องชัดเจนทุกชุด
+         * ============================================================================
+         */
+        const THAI_PHONETIC_DICTIONARY = {
+            // พยัญชนะเดี่ยวและคำสะกดที่ TTS มักอ่านผิด
+            'ก': 'กอ', 'ข': 'ขอ', 'ฃ': 'ฃอ', 'ค': 'คอ', 'ฅ': 'ฅอ', 'ฆ': 'ฆอ', 'ง': 'งอ',
+            'จ': 'จอ', 'ฉ': 'ฉอ', 'ช': 'ชอ', 'ซ': 'ซอ', 'ฌ': 'ฌอ', 'ญ': 'ญอ',
+            'ฎ': 'ฎอ', 'ฏ': 'ฏอ', 'ฐ': 'ฐอ', 'ฑ': 'ฑอ', 'ฒ': 'ฒอ', 'ณ': 'ณอ',
+            'ด': 'ดอ', 'ต': 'ตอ', 'ถ': 'ถอ', 'ท': 'ทอ', 'ธ': 'ธอ', 'น': 'นอ',
+            'บ': 'บอ', 'ป': 'ปอ', 'ผ': 'ผอ', 'ฝ': 'ฝอ', 'พ': 'พอ', 'ฟ': 'ฟอ', 'ภ': 'ภอ', 'ม': 'มอ',
+            'ย': 'ยอ', 'ร': 'รอ', 'ล': 'ลอ', 'ว': 'วอ', 'ศ': 'ศอ', 'ษ': 'ษอ', 'ส': 'สอ', 'ห': 'หอ', 'ฬ': 'ฬอ', 'อ': 'ออ', 'ฮ': 'ฮอ',
+            // คำอ่านพยัญชนะคู่และคำเฉพาะในบทเรียน
+            'ก ไก่': 'กอ ไก่',
+            'ข ไข่': 'ขอ ไข่',
+            'ช ช้าง': 'ชอ ช้าง',
+            'ง งู': 'งอ งู',
+            'น หนู': 'นอ หนู',
+            'ป ปลา': 'ปอ ปลา',
+            'ข อา ขา': 'ขอ อา ขา',
+            'ถ อือ ถือ': 'ถอ อือ ถือ',
+            'ห อู หู': 'หอ อู หู',
+            'ม อา มา': 'มอ อา มา',
+            'ด อู ดู': 'ดอ อู ดู',
+            'ง อู งู': 'งอ อู งู',
+            // คำควบกล้ำ อักษรนำ ตัวการันต์ และคำยาก ป.2 - ป.3
+            'ปูนา': 'ปู-นา',
+            'ตาสี': 'ตา-สี',
+            'มะลิ': 'มะ-ลิ',
+            'กะทิ': 'กะ-ทิ',
+            'ปะทะ': 'ปะ-ทะ',
+            'กังวาน': 'กัง-วาน',
+            'ตะครุบ': 'ตะ-ครุบ',
+            'เดินกราย': 'เดิน-กราย',
+            'ลำคลอง': 'ลำ-คลอง',
+            'เพลิดเพลิน': 'เพลิด-เพลิน',
+            'ตลาด': 'ตะ-หลาด',
+            'วันศุกร์': 'วัน-สุก',
+            'อาจารย์': 'อา-จาน',
+            'ดวงจันทร์': 'ดวง-จัน',
+            'แพทย์': 'แพด',
+            'ซื่อสัตย์': 'ซื่อ-สัด',
+            'ประโยชน์': 'ประ-โหยด',
+            'ปวงชน': 'ปวง-ชน',
+            'ทรัพยากรธรรมชาติ': 'ซับ-พะ-ยา-กอน-ทำ-มะ-ชาด',
+            'ทรัพยากร': 'ซับ-พะ-ยา-กอน',
+            'เยาวชนไทย': 'เยา-วะ-ชน-ไทย',
+            'สืบสาน': 'สืบ-สาน',
+            'ประเพณี': 'ประ-เพ-นี',
+            'เกษตรกร': 'กะ-เสด-ตระ-กอน',
+            'การเกษตร': 'กาน-กะ-เสด',
+            'กตัญญู': 'กะ-ตัน-ยู',
+            'กตเวที': 'กะ-ตะ-เว-ที',
+            'ผสมเกสร': 'ผะ-สม-เก-สอน',
+            'บึงงามพัฒนา': 'บึง-งาม-พัด-ทะ-นา',
+            'ปลอดสารพิษ': 'ปลอด-สาน-พิด'
+        };
+
+        const DEFAULT_LESSONS = [
+            // ระดับชั้น ป.1 (6 บทเรียน)
+            {
+                id: 'P1-L1', grade: 'P1', category: 'พยัญชนะไทย', title: 'บทที่ 1: พยัญชนะไทย ก–ฮ พาเพลิน',
+                emoji: '🐓', requiredStars: 0, rewardStars: 3, rewardCoins: 20,
+                items: [
+                    { text: 'ก ไก่ ข ไข่ ขวด ของเรา', phonetic: 'กอ ไก่, ขอ ไข่, ขวด ของ เรา', emoji: '🐔', hint: 'ออกเสียงพยัญชนะต้น กอ ไก่ และ ขอ ไข่ ให้ชัดเจน' },
+                    { text: 'ช ช้าง ตัวใหญ่ ง งู เลื้อยมา', phonetic: 'ชอ ช้าง ตัว ใหญ่, งอ งู เลื้อย มา', emoji: '🐘', hint: 'ช ช้าง ออกเสียง ชอ ช้าง' },
+                    { text: 'น หนู วิ่งไว ป ปลา ว่ายน้ำ', phonetic: 'นอ หนู วิ่ง ไว, ปอ ปลา ว่าย น้ำ', emoji: '🐟', hint: 'อ่านเว้นจังหวะสั้น ๆ ให้ชัดเจน' }
+                ],
+                question: { q: 'สัตว์ตัวใดในบทเรียนที่ว่ายน้ำได้?', options: ['ป ปลา', 'ก ไก่', 'ช ช้าง', 'น หนู'], answer: 'ป ปลา' }
+            },
+            {
+                id: 'P1-L2', grade: 'P1', category: 'สระไทย', title: 'บทที่ 2: สระไทยเสียงสั้น-เสียงยาว',
+                emoji: '🦀', requiredStars: 0, rewardStars: 3, rewardCoins: 20,
+                items: [
+                    { text: 'กา มา นา ดู ปู นา', phonetic: 'กา, มา, นา, ดู, ปู-นา', emoji: '🦀', hint: 'ฝึกสระอา และ สระอู เสียงยาว' },
+                    { text: 'ตาสี มี นา ดี', phonetic: 'ตา-สี, มี, นา, ดี', emoji: '🌾', hint: 'สระอี เสียงยาว ออกเสียงชัดเจน' },
+                    { text: 'มะลิ กะทิ ปะทะ', phonetic: 'มะ-ลิ, กะ-ทิ, ปะ-ทะ', emoji: '🌼', hint: 'สระอะ เสียงสั้น ออกเสียงกระชับ' }
+                ],
+                question: { q: 'คำว่า "ปูนา" ประสมด้วยสระใด?', options: ['สระอู และ สระอา', 'สระอี และ สระอา', 'สระอะ และ สระอิ', 'สระโอ และ สระอา'], answer: 'สระอู และ สระอา' }
+            },
+            {
+                id: 'P1-L3', grade: 'P1', category: 'วรรณยุกต์', title: 'บทที่ 3: ผันเสียงวรรณยุกต์สนุกจัง',
+                emoji: '🎶', requiredStars: 2, rewardStars: 3, rewardCoins: 25,
+                items: [
+                    { text: 'กา ก่า ก้า ก๊า ก๋า', phonetic: 'กา, ก่า, ก้า, ก๊า, ก๋า', emoji: '🎵', hint: 'ผันวรรณยุกต์ครบ 5 เสียง สามัญ เอก โท ตรี จัตวา' },
+                    { text: 'ปา ป่า ป้า ป๊า ป๋า', phonetic: 'ปา, ป่า, ป้า, ป๊า, ป๋า', emoji: '🎯', hint: 'สังเกตระดับเสียงสูงต่ำให้ชัดเจน' },
+                    { text: 'ไก่ แจ้ ขัน แต่ เช้า', phonetic: 'ไก่ แจ้, ขัน แต่ เช้า', emoji: '🐓', hint: 'ออกเสียงไม้เอกและไม้โทให้ชัดเจน' }
+                ],
+                question: { q: 'คำว่า "ป้า" มีรูปวรรณยุกต์ใด?', options: ['ไม้โท', 'ไม้เอก', 'ไม้ตรี', 'ไม้จัตวา'], answer: 'ไม้โท' }
+            },
+            {
+                id: 'P1-L4', grade: 'P1', category: 'การประสมคำ', title: 'บทที่ 4: สนุกกับการประสมคำ',
+                emoji: '🧩', requiredStars: 3, rewardStars: 4, rewardCoins: 30,
+                items: [
+                    { text: 'ข อา ขา ถ อือ ถือ ห อู หู', phonetic: 'ขอ อา ขา, ถอ อือ ถือ, หอ อู หู', emoji: '👂', hint: 'สะกดพยัญชนะและสระก่อนอ่านรวมคำ' },
+                    { text: 'ม อา มา ด อู ดู ง อู งู', phonetic: 'มอ อา มา, ดอ อู ดู, งอ อู งู', emoji: '🐍', hint: 'อ่านสะกดคำทีละพยางค์อย่างชัดเจน' }
+                ],
+                question: { q: 'พยัญชนะ "ถ" ประสมกับ "สระอือ" อ่านว่าอย่างไร?', options: ['ถือ', 'ถา', 'ถู', 'ถี'], answer: 'ถือ' }
+            },
+            {
+                id: 'P1-L5', grade: 'P1', category: 'คำพื้นฐาน', title: 'บทที่ 5: คำพื้นฐานรอบตัวหนู',
+                emoji: '🏡', requiredStars: 4, rewardStars: 4, rewardCoins: 30,
+                items: [
+                    { text: 'พ่อ แม่ พี่ น้อง รักกัน', phonetic: 'พ่อ, แม่, พี่, น้อง, รัก กัน', emoji: '👨‍👩‍👧‍👦', hint: 'คำพื้นฐานหมวดครอบครัว' },
+                    { text: 'โรงเรียน ของเรา น่าอยู่', phonetic: 'โรง เรียน, ของ เรา, น่า อยู่', emoji: '🏫', hint: 'อ่านออกเสียงเต็มคำ' }
+                ],
+                question: { q: 'สถานที่ใดในบทเรียนที่น่าอยู่?', options: ['โรงเรียน', 'ตลาดนัด', 'สนามบิน', 'โรงพยาบาล'], answer: 'โรงเรียน' }
+            },
+            {
+                id: 'P1-L6', grade: 'P1', category: 'การอ่านประโยคง่าย ๆ', title: 'บทที่ 6: หัดอ่านประโยคง่าย ๆ',
+                emoji: '📖', requiredStars: 5, rewardStars: 5, rewardCoins: 40,
+                items: [
+                    { text: 'ใบโบก ใบบัว ไป โรงเรียน', phonetic: 'ใบ โบก, ใบ บัว, ไป โรง เรียน', emoji: '🐘', hint: 'เว้นวรรคตอนให้เป็นธรรมชาติ' },
+                    { text: 'ฉัน ชอบ อ่าน หนังสือ ภาษาไทย', phonetic: 'ฉัน ชอบ อ่าน, หนัง สือ ภา สา ไทย', emoji: '📚', hint: 'อ่านด้วยน้ำเสียงสดใสชัดเจน' }
+                ],
+                question: { q: 'ใบโบกและใบบัวเดินทางไปที่ไหน?', options: ['โรงเรียน', 'ลำธาร', 'ภูเขา', 'ทะเล'], answer: 'โรงเรียน' }
+            },
+
+            // ระดับชั้น ป.2 (5 บทเรียน)
+            {
+                id: 'P2-L1', grade: 'P2', category: 'มาตราตัวสะกด', title: 'บทที่ 1: มาตราตัวสะกด 8 แม่',
+                emoji: '🌟', requiredStars: 0, rewardStars: 4, rewardCoins: 30,
+                items: [
+                    { text: 'แม่กง ลิงร้อง เพลงดัง กังวาน', phonetic: 'แม่ กง, ลิง ร้อง, เพลง ดัง, กัง วาน', emoji: '🐒', hint: 'ตัวสะกด ง งู แม่กง' },
+                    { text: 'แม่กน คนขยัน อ่านเขียน เรียนดี', phonetic: 'แม่ กน, คน ขะ หยัน, อ่าน เขียน, เรียน ดี', emoji: '✏️', hint: 'ตัวสะกดแม่กน ออกเสียงท้ายเสียง น' },
+                    { text: 'แม่กบ กบน้อย กระโดด ตะครุบ เหยื่อ', phonetic: 'แม่ กบ, กบ น้อย, กระ โดด, ตะ ครุบ เหยื่อ', emoji: '🐸', hint: 'ตัวสะกดแม่กบ' }
+                ],
+                question: { q: 'คำว่า "กังวาน" อยู่ในมาตราตัวสะกดแม่ใด?', options: ['แม่กน', 'แม่กง', 'แม่กบ', 'แม่กด'], answer: 'แม่กน' }
+            },
+            {
+                id: 'P2-L2', grade: 'P2', category: 'คำควบกล้ำ', title: 'บทที่ 2: คำควบกล้ำ ร ล ว ชัดเจน',
+                emoji: '🐯', requiredStars: 0, rewardStars: 4, rewardCoins: 35,
+                items: [
+                    { text: 'กวางป่า เดินกราย ใกล้ลำคลอง', phonetic: 'กวาง ป่า, เดิน กราย, ใกล้ ลำ คลอง', emoji: '🦌', hint: 'ออกเสียงควบกล้ำ กว กร กล และ คล ให้ชัดเจน' },
+                    { text: 'ครูพริ้ม เตรียมพร้อม เล่านิทาน เพลิดเพลิน', phonetic: 'ครู พริ้ม, เตรียม พร้อม, เล่า นิ ทาน, เพลิด เพลิน', emoji: '👩‍🏫', hint: 'ออกเสียง ร และ ล ควบกล้ำให้ชัดเจน' }
+                ],
+                question: { q: 'ข้อใดเป็นคำควบกล้ำทุกคำ?', options: ['กวาง ใกล้ คลอง', 'เดิน ป่า ลำ', 'นิทาน เล่า ครู', 'เด็ก เรียน ดี'], answer: 'กวาง ใกล้ คลอง' }
+            },
+            {
+                id: 'P2-L3', grade: 'P2', category: 'อักษรนำ', title: 'บทที่ 3: อักษรนำ ห นำ และ อ นำ ย',
+                emoji: '🍇', requiredStars: 3, rewardStars: 4, rewardCoins: 35,
+                items: [
+                    { text: 'อย่า อยู่ อย่าง อยาก จำไว้ให้ดี', phonetic: 'อย่า, อยู่, อย่าง, อยาก, จำ ไว้ ให้ ดี', emoji: '💡', hint: 'อ นำ ย มี 4 คำสำคัญ ออกเสียงวรรณยุกต์เอก' },
+                    { text: 'หมูป่า หนีหมี เข้าไป ในตลาด', phonetic: 'หมู ป่า, หนี หมี, เข้า ไป, ใน ตะ หลาด', emoji: '🐗', hint: 'ห นำ และคำอ่านอะกึ่งเสียง (ตะ-หลาด)' }
+                ],
+                question: { q: 'คำที่มี "อ นำ ย" มีทั้งหมดกี่คำ?', options: ['4 คำ', '2 คำ', '5 คำ', '6 คำ'], answer: '4 คำ' }
+            },
+            {
+                id: 'P2-L4', grade: 'P2', category: 'คำที่มีตัวการันต์', title: 'บทที่ 4: คำที่มีตัวการันต์น่ารู้',
+                emoji: '🌙', requiredStars: 5, rewardStars: 4, rewardCoins: 40,
+                items: [
+                    { text: 'วันศุกร์ อาจารย์ พาไป ดูดวงจันทร์', phonetic: 'วัน สุก, อา จาน, พา ไป, ดู ดวง จัน', emoji: '🌕', hint: 'ไม่ออกเสียงพยัญชนะที่มีไม้ทัณฑฆาตกำกับ' },
+                    { text: 'แพทย์ ซื่อสัตย์ สร้างประโยชน์ แก่ปวงชน', phonetic: 'แพด, ซื่อ สัด, สร้าง ประ โหยด, แก่ ปวง ชน', emoji: '🩺', hint: 'อ่านออกเสียงให้ถูกต้องตามหลักภาษา' }
+                ],
+                question: { q: 'คำว่า "ดวงจันทร์" พยัญชนะใดไม่ออกเสียง?', options: ['ทร การันต์', 'ด เด็ก', 'จ จาน', 'ว แหวน'], answer: 'ทร การันต์' }
+            },
+            {
+                id: 'P2-L5', grade: 'P2', category: 'การอ่านประโยคและเรื่องสั้น', title: 'บทที่ 5: เรื่องสั้นน้ำใจของเพื่อน',
+                emoji: '🤝', requiredStars: 6, rewardStars: 5, rewardCoins: 50,
+                items: [
+                    { text: 'เช้าวันจันทร์ ก้องภพแบ่งขนมให้เพื่อนที่ลืมนำกระเป๋ามาโรงเรียน', phonetic: 'เช้า วัน จัน, ก้อง พบ แบ่ง ขะ หนม ให้ เพื่อน, ที่ ลืม นำ กระ เป๋า มา โรง เรียน', emoji: '🥪', hint: 'อ่านแบ่งวรรคตอนและใส่น้ำเสียงอ่อนโยน' },
+                    { text: 'เพื่อนกล่าวคำขอบคุณด้วยรอยยิ้มที่สดใส', phonetic: 'เพื่อน กล่าว คำ ขอบ คุน, ด้วย รอย ยิ้ม ที่ สด ใส', emoji: '😊', hint: 'อ่านให้คล่องแคล่วและชัดเจน' }
+                ],
+                question: { q: 'ก้องภพแสดงความมีน้ำใจต่อเพื่อนอย่างไร?', options: ['แบ่งขนมให้เพื่อน', 'ช่วยถือกระเป๋า', 'สอนการบ้าน', 'พาไปหาครู'], answer: 'แบ่งขนมให้เพื่อน' }
+            },
+
+            // ระดับชั้น ป.3 (5 บทเรียน)
+            {
+                id: 'P3-L1', grade: 'P3', category: 'คำหลายพยางค์', title: 'บทที่ 1: คำหลายพยางค์ในชีวิตประจำวัน',
+                emoji: '🏛️', requiredStars: 0, rewardStars: 5, rewardCoins: 40,
+                items: [
+                    { text: 'ทรัพยากรธรรมชาติ และสิ่งแวดล้อม มีความสำคัญยิ่ง', phonetic: 'ซับ พะ ยา กอน ทำ มะ ชาด, และ สิ่ง แวด ล้อม, มี ความ สำ คัน ยิ่ง', emoji: '🌳', hint: 'อ่านออกเสียงคำว่า ทรัพยากรธรรมชาติ (ซับ-พะ-ยา-กอน-ทำ-มะ-ชาด) ให้ครบทุกพยางค์' },
+                    { text: 'เยาวชนไทย ร่วมสืบสาน ประเพณีอันดีงาม', phonetic: 'เยา วะ ชน ไทย, ร่วม สืบ สาน, ประ เพ นี อัน ดี งาม', emoji: '🙏', hint: 'ระวังการเว้นจังหวะระหว่างคำ' }
+                ],
+                question: { q: 'คำว่า "ทรัพยากรธรรมชาติ" อ่านออกเสียงกี่พยางค์?', options: ['7 พยางค์', '5 พยางค์', '6 พยางค์', '8 พยางค์'], answer: '7 พยางค์' }
+            },
+            {
+                id: 'P3-L2', grade: 'P3', category: 'คำยาก', title: 'บทที่ 2: พิชิตคำยากและคำพ้อง',
+                emoji: '🏆', requiredStars: 0, rewardStars: 5, rewardCoins: 45,
+                items: [
+                    { text: 'เกษตรกร มุ่งมั่น พัฒนา พืชผล ทางการเกษตร', phonetic: 'กะ เสด ตระ กอน, มุ่ง มั่น, พัด ทะ นา, พืช ผล, ทาง กาน กะ เสด', emoji: '🌾', hint: 'คำว่า เกษตรกร อ่านว่า กะ-เสด-ตระ-กอน' },
+                    { text: 'กตัญญู กตเวที เป็นเครื่องหมาย ของคนดี', phonetic: 'กะ ตัน ยู, กะ ตะ เว ที, เป็น เครื่อง หมาย, ของ คน ดี', emoji: '🌸', hint: 'ออกเสียงพยัญชนะและสระให้แม่นยำ' }
+                ],
+                question: { q: 'คำว่า "เกษตรกร" อ่านว่าอย่างไรจึงจะถูกต้อง?', options: ['กะ-เสด-ตระ-กอน', 'เก-สด-กร', 'กะ-เสด-กอน', 'เก-สะ-ตระ-กอน'], answer: 'กะ-เสด-ตระ-กอน' }
+            },
+            {
+                id: 'P3-L3', grade: 'P3', category: 'การอ่านจับใจความ', title: 'บทที่ 3: การอ่านจับใจความสำคัญ',
+                emoji: '🔍', requiredStars: 4, rewardStars: 5, rewardCoins: 50,
+                items: [
+                    { text: 'ผึ้งงานบินออกจากรังตั้งแต่เช้าตรู่เพื่อหาน้ำหวานจากดอกไม้มาเก็บสะสมไว้ในรัง', phonetic: 'ผึ้ง งาน บิน ออก จาก รัง ตั้ง แต่ เช้า ตรู่, เพื่อ หา น้ำ หวาน จาก ดอก ไม้, มา เก็บ สะ สม ไว้ ใน รัง', emoji: '🐝', hint: 'สังเกตว่า ใคร ทำอะไร ที่ไหน เมื่อไร' },
+                    { text: 'นอกจากได้น้ำหวานแล้ว ผึ้งยังช่วยผสมเกสรให้พืชออกผลอีกด้วย', phonetic: 'นอก จาก ได้ น้ำ หวาน แล้ว, ผึ้ง ยัง ช่วย ผะ สม เก สอน, ให้ พืช ออก ผล อีก ด้วย', emoji: '🌻', hint: 'จับใจความสำคัญของประโยค' }
+                ],
+                question: { q: 'ใจความสำคัญของเรื่องนี้คือข้อใด?', options: ['ผึ้งงานหาน้ำหวานและช่วยผสมเกสรดอกไม้', 'ดอกไม้บานในตอนเช้าตรู่', 'รังผึ้งมีขนาดใหญ่', 'พืชออกผลในฤดูฝน'], answer: 'ผึ้งงานหาน้ำหวานและช่วยผสมเกสรดอกไม้' }
+            },
+            {
+                id: 'P3-L4', grade: 'P3', category: 'การสรุปเรื่อง', title: 'บทที่ 4: ฝึกคิดและสรุปเรื่องจากนิทาน',
+                emoji: '🦊', requiredStars: 6, rewardStars: 5, rewardCoins: 55,
+                items: [
+                    { text: 'มดตัวน้อยช่วยชีวิตนกเขาจากการถูกนายพรานยิง เพราะนกเขาเคยทิ้งใบไม้ช่วยมดให้รอดจากน้ำพัด', phonetic: 'มด ตัว น้อย ช่วย ชี วิด นก เขา จาก กาน ถูก นาย พราน ยิง, เพราะ นก เขา เคย ทิ้ง ใบ ไม้, ช่วย มด ให้ รอด จาก น้ำ พัด', emoji: '🕊️', hint: 'อ่านเรื่องราวและคิดสรุปข้อคิดที่ได้' }
+                ],
+                question: { q: 'นิทานเรื่องมดกับนกเขาสอนให้รู้เรื่องใด?', options: ['การทำดีต่อกันย่อมได้รับผลดีตอบแทน', 'ไม่ควรเดินใกล้ลำธาร', 'นกเขาบินเร็วกว่ามด', 'การหาอาหารในป่า'], answer: 'การทำดีต่อกันย่อมได้รับผลดีตอบแทน' }
+            },
+            {
+                id: 'P3-L5', grade: 'P3', category: 'การตอบคำถามจากเรื่องที่อ่าน', title: 'บทที่ 5: วิเคราะห์และตอบคำถามจากเรื่องบึงงามพัฒนา',
+                emoji: '🏫', requiredStars: 8, rewardStars: 6, rewardCoins: 60,
+                items: [
+                    { text: 'นักเรียนโรงเรียนบึงงามพัฒนาร่วมกันปลูกผักสวนครัวปลอดสารพิษเพื่อนำมาประกอบอาหารกลางวัน', phonetic: 'นัก เรียน โรง เรียน บึง งาม พัด ทะ นา, ร่วม กัน ปลูก ผัก สวน ครัว ปลอด สาน พิด, เพื่อ นำ มา ประ กอบ อา หาน กลาง วัน', emoji: '🥬', hint: 'อ่านให้ชัดเจนและจำรายละเอียดเพื่อตอบคำถาม' },
+                    { text: 'กิจกรรมนี้ช่วยให้เด็กได้กินผักสดสะอาดและเรียนรู้การพึ่งพาตนเองอย่างยั่งยืน', phonetic: 'กิด จะ กำ นี้, ช่วย ให้ เด็ก ได้ กิน ผัก สด สะ อาด, และ เรียน รู้ กาน พึ่ง พา ตน เอง อย่าง ยั่ง ยืน', emoji: '🥗', hint: 'ออกเสียงคำควบกล้ำและคำหลายพยางค์ให้ถูกต้อง' }
+                ],
+                question: { q: 'ประโยชน์ของการปลูกผักสวนครัวในโรงเรียนบึงงามพัฒนาคืออะไร?', options: ['ได้กินผักปลอดสารพิษและฝึกการพึ่งพาตนเอง', 'ใช้เวลาว่างหลังเลิกเรียน', 'นำผักไปขายที่ตลาดในเมือง', 'ใช้ประกวดวาดภาพระบายสี'], answer: 'ได้กินผักปลอดสารพิษและฝึกการพึ่งพาตนเอง' }
+            }
+        ];
+
+        const DEFAULT_USERS = [
+            { id: '1001', pin: '1234', role: 'student', name: 'ด.ช. ก้องภพ รักการอ่าน', grade: 'P1', avatar: '🦉', stars: 6, coins: 85, completedLessons: ['P1-L1', 'P1-L2'], inProgressLessons: ['P1-L3'], group: 'ดีมาก' },
+            { id: '2001', pin: '1234', role: 'student', name: 'ด.ญ. พลอยใส ใจดี', grade: 'P2', avatar: '🐰', stars: 5, coins: 70, completedLessons: ['P2-L1'], inProgressLessons: ['P2-L2'], group: 'กำลังพัฒนา' },
+            { id: '3001', pin: '1234', role: 'student', name: 'ด.ช. ภูผา ปัญญาไว', grade: 'P3', avatar: '🦁', stars: 9, coins: 120, completedLessons: ['P3-L1', 'P3-L2'], inProgressLessons: ['P3-L3'], group: 'ดีเยี่ยม' },
+            { id: 'T01', pin: '1234', role: 'teacher', name: 'คุณครูสมศรี มีเมตตา', grade: 'ALL', avatar: '👩‍🏫' },
+            { id: 'ADMIN', pin: '1234', role: 'admin', name: 'ผู้ดูแลระบบโรงเรียนบึงงามพัฒนา', grade: 'ALL', avatar: '🛡️' }
+        ];
+
+        const DEFAULT_LOGS = [
+            {
+                id: 'LOG-1', timestamp: '2025-05-10 09:30', studentId: '1001', studentName: 'ด.ช. ก้องภพ รักการอ่าน',
+                grade: 'P1', lessonId: 'P1-L1', lessonTitle: 'บทที่ 1: พยัญชนะไทย ก–ฮ พาเพลิน',
+                targetText: 'ก ไก่ ข ไข่ ขวด ของเรา', transcript: 'ก ไก่ ข ไข่ ขวด ของเรา',
+                missedWords: [], accuracy: 100, audioDataUrl: ''
+            },
+            {
+                id: 'LOG-2', timestamp: '2025-05-10 10:15', studentId: '2001', studentName: 'ด.ญ. พลอยใส ใจดี',
+                grade: 'P2', lessonId: 'P2-L2', lessonTitle: 'บทที่ 2: คำควบกล้ำ ร ล ว ชัดเจน',
+                targetText: 'กวางป่า เดินกราย ใกล้ลำคลอง', transcript: 'กวางป่า เดิน ใกล้คลอง',
+                missedWords: ['เดินกราย', 'ใกล้ลำคลอง'], accuracy: 67, audioDataUrl: ''
+            }
+        ];
+
+        // Global State Store (In-memory with optional Backend API sync)
+        const State = {
+            apiEndpoint: '',
+            currentUser: null,
+            loginRoleTab: 'student',
+            users: JSON.parse(JSON.stringify(DEFAULT_USERS)),
+            lessons: JSON.parse(JSON.stringify(DEFAULT_LESSONS)),
+            readingLogs: JSON.parse(JSON.stringify(DEFAULT_LOGS)),
+            selectedGrade: 'P1',
+            studio: {
+                lessonId: 'P1-L1',
+                itemIndex: 0,
+                isRecording: false,
+                mediaRecorder: null,
+                audioChunks: [],
+                recordedAudioUrl: '',
+                recordedBase64: '',
+                recognition: null,
+                // Strict Separation States:
+                hasTranscribed: false,
+                hasEvaluated: false,
+                hasAiAnalyzed: false,
+                lastEvaluation: null
+            },
+            games: {
+                currentMode: 'match',
+                sessionScore: 0,
+                roundIndex: 0,
+                syllableBuilt: []
+            }
+        };
+
+        /**
+         * ============================================================================
+         * MODULE 2: CORE APP CONTROLLER & UI UTILITIES
+         * ============================================================================
+         */
+        const App = {
+            init() {
+                // Default login as Student 1001 for instant demonstration, while allowing full account switching
+                State.currentUser = State.users[0];
+                State.selectedGrade = State.currentUser.grade || 'P1';
+                this.updateHeaderUI();
+                this.navigate('dashboard');
+            },
+
+            showLoading(text = 'กำลังประมวลผล...') {
+                document.getElementById('loadingText').textContent = text;
+                const el = document.getElementById('loadingOverlay');
+                el.classList.remove('hidden');
+                el.classList.add('flex');
+            },
+
+            hideLoading() {
+                const el = document.getElementById('loadingOverlay');
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            },
+
+            toast(message, type = 'success') {
+                const container = document.getElementById('toastContainer');
+                const colors = {
+                    success: 'bg-brand-green text-white border-emerald-700',
+                    warning: 'bg-brand-yellow text-slate-900 border-amber-500',
+                    error: 'bg-rose-600 text-white border-rose-800',
+                    info: 'bg-brand-blue text-white border-brand-darkBlue'
+                };
+                const icons = {
+                    success: 'fa-circle-check',
+                    warning: 'fa-triangle-exclamation',
+                    error: 'fa-circle-xmark',
+                    info: 'fa-circle-info'
+                };
+                const div = document.createElement('div');
+                div.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-2xl shadow-xl border-b-4 font-bold text-sm transition-all ${colors[type] || colors.info}`;
+                div.innerHTML = `<i class="fa-solid ${icons[type] || icons.info} text-lg"></i><span>${message}</span>`;
+                container.appendChild(div);
+                setTimeout(() => {
+                    div.style.opacity = '0';
+                    setTimeout(() => div.remove(), 300);
+                }, 3200);
+            },
+
+            openModal(id) {
+                const m = document.getElementById(id);
+                if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+            },
+
+            closeModal(id) {
+                const m = document.getElementById(id);
+                if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+            },
+
+            updateHeaderUI() {
+                const user = State.currentUser;
+                const statsBadge = document.getElementById('studentStatsBadge');
+                const navTeacher = document.getElementById('navTeacherBtn');
+                const navAdmin = document.getElementById('navAdminBtn');
+                const mainNav = document.getElementById('mainNav');
+
+                if (!user) {
+                    document.getElementById('headerUserName').textContent = 'กรุณาเข้าสู่ระบบ';
+                    document.getElementById('headerUserRole').textContent = 'ยังไม่ได้ล็อกอิน';
+                    statsBadge.classList.add('hidden');
+                    mainNav.classList.add('hidden');
+                    return;
+                }
+
+                mainNav.classList.remove('hidden');
+                document.getElementById('headerUserName').textContent = user.name;
+                const roleNames = { student: `นักเรียน ${user.grade}`, teacher: 'ครูผู้สอน', admin: 'ผู้ดูแลระบบ' };
+                document.getElementById('headerUserRole').textContent = roleNames[user.role] || 'สมาชิก';
+
+                if (user.role === 'student') {
+                    statsBadge.classList.remove('hidden');
+                    statsBadge.classList.add('flex');
+                    document.getElementById('headerStars').textContent = user.stars || 0;
+                    document.getElementById('headerCoins').textContent = user.coins || 0;
+                    navTeacher.classList.add('hidden');
+                    navAdmin.classList.add('hidden');
+                } else if (user.role === 'teacher') {
+                    statsBadge.classList.add('hidden');
+                    navTeacher.classList.remove('hidden');
+                    navTeacher.classList.add('flex');
+                    navAdmin.classList.add('hidden');
+                } else if (user.role === 'admin') {
+                    statsBadge.classList.add('hidden');
+                    navTeacher.classList.remove('hidden');
+                    navTeacher.classList.add('flex');
+                    navAdmin.classList.remove('hidden');
+                    navAdmin.classList.add('flex');
+                }
+            },
+
+            navigate(viewName) {
+                // Auth & Cross-Account Access Guard
+                if (!State.currentUser && viewName !== 'login') {
+                    viewName = 'login';
+                }
+                if (State.currentUser && State.currentUser.role === 'student' && (viewName === 'teacher' || viewName === 'admin')) {
+                    this.toast('ป้องกันการเข้าถึง: เฉพาะบัญชีครูหรือผู้ดูแลระบบเท่านั้น', 'error');
+                    return;
+                }
+                if (State.currentUser && State.currentUser.role === 'teacher' && viewName === 'admin') {
+                    this.toast('เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่เข้าหน้านี้ได้', 'warning');
+                    return;
+                }
+
+                const views = ['login', 'dashboard', 'lessons', 'studio', 'games', 'history', 'teacher', 'admin'];
+                views.forEach(v => {
+                    const sec = document.getElementById(`view-${v}`);
+                    if (sec) sec.classList.toggle('hidden', v !== viewName);
+                });
+
+                // Highlight active nav tab
+                document.querySelectorAll('.nav-tab').forEach(btn => {
+                    const isActive = btn.dataset.nav === viewName;
+                    btn.classList.toggle('bg-brand-blue', isActive);
+                    btn.classList.toggle('text-white', isActive);
+                });
+
+                // Render specific view content
+                if (viewName === 'dashboard') this.renderDashboard();
+                if (viewName === 'lessons') Lessons.render();
+                if (viewName === 'studio') Studio.initView();
+                if (viewName === 'games') Games.initView();
+                if (viewName === 'history') this.renderStudentHistory();
+                if (viewName === 'teacher') Teacher.renderDashboard();
+                if (viewName === 'admin') Admin.render();
+            },
+
+            renderDashboard() {
+                const user = State.currentUser;
+                if (!user) return;
+
+                if (user.role !== 'student') {
+                    // If teacher or admin clicks Home, show summary & redirect option
+                    document.getElementById('dashAvatarEmoji').textContent = user.avatar || '👩‍🏫';
+                    document.getElementById('dashGradeBadge').textContent = user.role === 'teacher' ? 'บัญชีครูผู้สอน' : 'บัญชีผู้ดูแลระบบ';
+                    document.getElementById('dashStudentCode').textContent = `รหัส: ${user.id}`;
+                    document.getElementById('dashSkillGroup').textContent = 'สิทธิ์จัดการเต็มรูปแบบ';
+                    document.getElementById('dashStudentName').textContent = user.name;
+                    document.getElementById('dashStars').textContent = '-';
+                    document.getElementById('dashCoins').textContent = '-';
+                } else {
+                    document.getElementById('dashAvatarEmoji').textContent = user.avatar || '🦉';
+                    const gradeLabel = { P1: 'ชั้นประถมศึกษาปีที่ 1', P2: 'ชั้นประถมศึกษาปีที่ 2', P3: 'ชั้นประถมศึกษาปีที่ 3' };
+                    document.getElementById('dashGradeBadge').textContent = gradeLabel[user.grade] || 'ชั้น ป.1';
+                    document.getElementById('dashStudentCode').textContent = `รหัสนักเรียน: ${user.id}`;
+                    document.getElementById('dashSkillGroup').textContent = `กลุ่มทักษะ: ${user.group || 'กำลังพัฒนา'}`;
+                    document.getElementById('dashStudentName').textContent = user.name;
+                    document.getElementById('dashStars').textContent = user.stars || 0;
+                    document.getElementById('dashCoins').textContent = user.coins || 0;
+                }
+
+                const targetGrade = user.role === 'student' ? user.grade : 'P1';
+                const gradeLessons = State.lessons.filter(l => l.grade === targetGrade);
+                const completedIds = user.completedLessons || [];
+                const progressPercent = gradeLessons.length ? Math.round((completedIds.filter(id => gradeLessons.some(gl => gl.id === id)).length / gradeLessons.length) * 100) : 0;
+
+                document.getElementById('dashProgressPercent').textContent = `${progressPercent}%`;
+                document.getElementById('dashProgressBar').style.width = `${progressPercent}%`;
+
+                // Render In-Progress Lessons
+                const inProgressContainer = document.getElementById('dashInProgressList');
+                const pendingLessons = gradeLessons.filter(l => !completedIds.includes(l.id));
+                if (pendingLessons.length === 0) {
+                    inProgressContainer.innerHTML = `<div class="p-4 bg-emerald-50 text-emerald-800 rounded-2xl font-bold text-sm">🎉 ยอดเยี่ยมมาก! เรียนครบทุกบทในระดับชั้นนี้แล้ว</div>`;
+                } else {
+                    inProgressContainer.innerHTML = pendingLessons.slice(0, 3).map(l => `
+                        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-sky-50/70 border border-sky-100 hover:bg-sky-100/60 transition">
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl">${l.emoji}</span>
+                                <div>
+                                    <span class="text-[11px] font-extrabold text-brand-blue uppercase">${l.category}</span>
+                                    <h4 class="font-extrabold text-slate-800 text-sm">${l.title}</h4>
+                                </div>
+                            </div>
+                            <button onclick="Lessons.openInStudio('${l.id}')" class="bg-brand-blue text-white font-bold px-3.5 py-2 rounded-xl text-xs btn-kid shrink-0">
+                                เรียนต่อ <i class="fa-solid fa-play ml-1"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                }
+
+                // Render Completed Lessons
+                const completedContainer = document.getElementById('dashCompletedList');
+                const doneLessons = State.lessons.filter(l => completedIds.includes(l.id));
+                document.getElementById('dashCompletedCount').textContent = `${doneLessons.length} บทเรียน`;
+
+                if (doneLessons.length === 0) {
+                    completedContainer.innerHTML = `<div class="p-4 bg-slate-50 text-slate-400 rounded-2xl font-bold text-sm text-center">ยังไม่มีบทเรียนที่เรียนสำเร็จ มาเริ่มบทที่ 1 กันเลย!</div>`;
+                } else {
+                    completedContainer.innerHTML = doneLessons.map(l => `
+                        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200">
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl">${l.emoji}</span>
+                                <div>
+                                    <span class="text-[11px] font-extrabold text-brand-green">${l.grade} • ${l.category}</span>
+                                    <h4 class="font-extrabold text-slate-800 text-sm">${l.title}</h4>
+                                </div>
+                            </div>
+                            <button onclick="Lessons.openInStudio('${l.id}')" class="bg-white text-emerald-700 border border-emerald-300 font-bold px-3 py-1.5 rounded-xl text-xs hover:bg-emerald-100">
+                                ทบทวน
+                            </button>
+                        </div>
+                    `).join('');
+                }
+            },
+
+            renderStudentHistory() {
+                const user = State.currentUser;
+                const tbody = document.getElementById('studentHistoryTableBody');
+                if (!user) return;
+
+                // Prevent Cross-Student Data Access: Filter strictly by current logged-in student ID (unless teacher/admin)
+                const myLogs = State.readingLogs.filter(log => {
+                    if (user.role === 'student') return log.studentId === user.id;
+                    return true;
+                });
+
+                if (myLogs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 font-bold">ยังไม่มีประวัติการบันทึกเสียงอ่านสำหรับบัญชีนี้</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = myLogs.slice().reverse().map(log => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3.5 text-xs text-slate-500 font-semibold">${log.timestamp}</td>
+                        <td class="p-3.5 font-bold text-slate-800">${log.lessonTitle || log.lessonId}</td>
+                        <td class="p-3.5 reading-text font-bold text-brand-darkBlue">${log.targetText}</td>
+                        <td class="p-3.5 reading-text text-slate-700">${log.transcript}</td>
+                        <td class="p-3.5 text-xs font-bold ${log.missedWords && log.missedWords.length ? 'text-rose-600' : 'text-emerald-600'}">
+                            ${log.missedWords && log.missedWords.length ? log.missedWords.join(', ') : 'อ่านถูกต้องครบทุกคำ'}
+                        </td>
+                        <td class="p-3.5 text-center">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${log.accuracy >= 80 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${log.accuracy}%</span>
+                        </td>
+                        <td class="p-3.5 text-center">
+                            ${log.audioDataUrl ? `<audio controls src="${log.audioDataUrl}" class="h-8 w-36 mx-auto"></audio>` : `<button onclick="Studio.speakText('${log.transcript.replace(/'/g, "\\'")}')" class="text-xs bg-sky-100 text-brand-blue font-bold px-2.5 py-1 rounded-lg"><i class="fa-solid fa-volume-high"></i> ฟังเสียงจำลอง</button>`}
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        };
+
+        /**
+         * ============================================================================
+         * MODULE 3: AUTHENTICATION & CROSS-ACCOUNT PROTECTION
+         * ============================================================================
+         */
+        const Auth = {
+            switchRoleTab(role) {
+                State.loginRoleTab = role;
+                ['student', 'teacher', 'admin'].forEach(r => {
+                    const btn = document.getElementById(`roleTab-${r}`);
+                    btn.className = r === role
+                        ? 'flex-1 py-2.5 rounded-xl font-bold text-sm transition bg-brand-blue text-white shadow'
+                        : 'flex-1 py-2.5 rounded-xl font-bold text-sm transition text-slate-600';
+                });
+                const labels = {
+                    student: 'รหัสนักเรียน (เช่น 1001, 2001, 3001)',
+                    teacher: 'รหัสประจำตัวครูผู้สอน (เช่น T01)',
+                    admin: 'รหัสผู้ดูแลระบบ (เช่น ADMIN)'
+                };
+                document.getElementById('loginIdLabel').textContent = labels[role];
+            },
+
+            fillDemo(role, id, pin) {
+                this.switchRoleTab(role);
+                document.getElementById('loginIdInput').value = id;
+                document.getElementById('loginPinInput').value = pin;
+            },
+
+            handleLogin(e) {
+                e.preventDefault();
+                const id = document.getElementById('loginIdInput').value.trim();
+                const pin = document.getElementById('loginPinInput').value.trim();
+
+                const found = State.users.find(u => u.id.toUpperCase() === id.toUpperCase() && u.pin === pin);
+                if (!found) {
+                    App.toast('รหัสประจำตัวหรือรหัส PIN ไม่ถูกต้อง กรุณาลองใหม่', 'error');
+                    return;
+                }
+
+                State.currentUser = found;
+                if (found.role === 'student') {
+                    State.selectedGrade = found.grade;
+                    const firstLesson = State.lessons.find(l => l.grade === found.grade);
+                    if (firstLesson) State.studio.lessonId = firstLesson.id;
+                }
+
+                App.updateHeaderUI();
+                App.toast(`เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ ${found.name}`, 'success');
+
+                if (found.role === 'teacher') App.navigate('teacher');
+                else if (found.role === 'admin') App.navigate('admin');
+                else App.navigate('dashboard');
+            },
+
+            logout() {
+                State.currentUser = null;
+                App.updateHeaderUI();
+                App.navigate('login');
+            }
+        };
+
+        /**
+         * ============================================================================
+         * MODULE 4: LESSONS SYSTEM (ป.1–ป.3 + UNLOCK MECHANISM)
+         * ============================================================================
+         */
+        const Lessons = {
+            setGradeFilter(grade) {
+                State.selectedGrade = grade;
+                this.render();
+            },
+
+            render() {
+                ['P1', 'P2', 'P3'].forEach(g => {
+                    const btn = document.getElementById(`gradeBtn-${g}`);
+                    const active = State.selectedGrade === g;
+                    btn.className = active
+                        ? 'grade-tab px-5 py-2.5 rounded-xl font-extrabold text-sm transition bg-brand-blue text-white shadow'
+                        : 'grade-tab px-5 py-2.5 rounded-xl font-extrabold text-sm transition text-slate-600 hover:bg-slate-200';
+                });
+
+                const user = State.currentUser;
+                const userStars = user && user.role === 'student' ? (user.stars || 0) : 999;
+                const completedIds = user && user.completedLessons ? user.completedLessons : [];
+                const filtered = State.lessons.filter(l => l.grade === State.selectedGrade);
+
+                const container = document.getElementById('lessonCardsContainer');
+                container.innerHTML = filtered.map(lesson => {
+                    const isCompleted = completedIds.includes(lesson.id);
+                    const isLocked = userStars < (lesson.requiredStars || 0) && !isCompleted;
+
+                    return `
+                        <div class="bg-white rounded-3xl p-6 shadow-md border-2 ${isCompleted ? 'border-emerald-300' : isLocked ? 'border-slate-200 opacity-85' : 'border-sky-200'} card-bounce flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="bg-sky-100 text-brand-darkBlue text-xs font-extrabold px-3 py-1 rounded-full">${lesson.category}</span>
+                                    ${isCompleted
+                                        ? `<span class="bg-emerald-100 text-emerald-700 text-xs font-extrabold px-2.5 py-1 rounded-full"><i class="fa-solid fa-check"></i> สำเร็จแล้ว</span>`
+                                        : isLocked
+                                            ? `<span class="bg-amber-100 text-amber-800 text-xs font-extrabold px-2.5 py-1 rounded-full"><i class="fa-solid fa-lock"></i> ใช้ ${lesson.requiredStars} ⭐</span>`
+                                            : `<span class="bg-orange-100 text-brand-orange text-xs font-extrabold px-2.5 py-1 rounded-full">+${lesson.rewardStars} ⭐</span>`
+                                    }
+                                </div>
+                                <div class="flex items-center gap-3 my-2">
+                                    <div class="w-14 h-14 rounded-2xl bg-sky-50 flex items-center justify-center text-3xl shrink-0">${lesson.emoji}</div>
+                                    <h3 class="text-xl font-extrabold text-slate-800">${lesson.title}</h3>
+                                </div>
+                                <div class="mt-3 bg-slate-50 rounded-2xl p-3.5 text-sm text-slate-600 space-y-1.5">
+                                    <div class="font-bold text-slate-500">ตัวอย่างคำ/ประโยคในบทเรียน:</div>
+                                    ${lesson.items.slice(0, 2).map(it => `<div class="reading-text font-extrabold text-slate-800 text-lg md:text-xl">• ${it.text}</div>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                                <button onclick="Studio.speakText('${(lesson.items[0].phonetic || lesson.items[0].text).replace(/'/g, "\\'")}')" class="bg-sky-50 hover:bg-sky-100 text-brand-blue font-bold px-4 py-3 rounded-xl text-sm">
+                                    <i class="fa-solid fa-volume-high"></i> ฟังเสียงตัวอย่าง
+                                </button>
+                                ${isLocked
+                                    ? `<button onclick="Lessons.unlockWithCoins('${lesson.id}', ${lesson.requiredStars})" class="flex-1 bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold py-3 px-4 rounded-xl text-sm btn-kid">
+                                        <i class="fa-solid fa-unlock-keyhole"></i> ใช้ 30 🪙 ปลดล็อกทันที
+                                       </button>`
+                                    : `<button onclick="Lessons.openInStudio('${lesson.id}')" class="flex-1 bg-brand-green hover:bg-green-600 text-white font-extrabold py-3 px-4 rounded-xl text-sm btn-kid">
+                                        <i class="fa-solid fa-microphone-lines"></i> เริ่มฝึกอ่านบทนี้
+                                       </button>`
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            unlockWithCoins(lessonId, reqStars) {
+                const user = State.currentUser;
+                if (!user || user.role !== 'student') return;
+                if ((user.coins || 0) < 30) {
+                    App.toast(`เหรียญไม่พอจ้า! ต้องใช้ 30 เหรียญ หรือสะสมให้ครบ ${reqStars} ดาว`, 'warning');
+                    return;
+                }
+                user.coins -= 30;
+                const lesson = State.lessons.find(l => l.id === lessonId);
+                if (lesson) lesson.requiredStars = 0;
+                App.updateHeaderUI();
+                this.render();
+                App.toast('ปลดล็อกบทเรียนสำเร็จแล้ว! ไปเริ่มฝึกอ่านกันเลย', 'success');
+            },
+
+            openInStudio(lessonId) {
+                State.studio.lessonId = lessonId;
+                State.studio.itemIndex = 0;
+                App.navigate('studio');
+            }
+        };
+
+        /**
+         * ============================================================================
+         * MODULE 5: AUDIO & AI STUDIO (TTS, STT, ACCURACY EVAL, GEMINI AI SEPARATED)
+         * ============================================================================
+         */
+        const Studio = {
+            initView() {
+                const select = document.getElementById('studioLessonSelect');
+                select.innerHTML = State.lessons.map(l =>
+                    `<option value="${l.id}" ${l.id === State.studio.lessonId ? 'selected' : ''}>[${l.grade}] ${l.title}</option>`
+                ).join('');
+                this.renderCurrentItem();
+            },
+
+            selectLesson(lessonId) {
+                State.studio.lessonId = lessonId;
+                State.studio.itemIndex = 0;
+                this.renderCurrentItem();
+            },
+
+            prevItem() {
+                const lesson = this.getCurrentLesson();
+                if (!lesson) return;
+                State.studio.itemIndex = (State.studio.itemIndex - 1 + lesson.items.length) % lesson.items.length;
+                this.renderCurrentItem();
+            },
+
+            nextItem() {
+                const lesson = this.getCurrentLesson();
+                if (!lesson) return;
+                State.studio.itemIndex = (State.studio.itemIndex + 1) % lesson.items.length;
+                this.renderCurrentItem();
+            },
+
+            getCurrentLesson() {
+                return State.lessons.find(l => l.id === State.studio.lessonId) || State.lessons[0];
+            },
+
+            renderCurrentItem() {
+                const lesson = this.getCurrentLesson();
+                const item = lesson.items[State.studio.itemIndex] || lesson.items[0];
+
+                document.getElementById('studioLessonBadge').textContent = `${lesson.grade} • หมวด${lesson.category}`;
+                document.getElementById('studioLessonTitle').textContent = lesson.title;
+                document.getElementById('studioItemCounter').textContent = `${State.studio.itemIndex + 1} / ${lesson.items.length}`;
+                document.getElementById('studioTargetEmoji').textContent = item.emoji || lesson.emoji || '📖';
+                document.getElementById('studioTargetText').textContent = item.text;
+                document.getElementById('studioTargetHint').textContent = `คำแนะนำ: ${item.hint || 'ออกเสียงให้ชัดเจนทุกพยางค์'}`;
+
+                // สร้างปุ่มกดฟังเสียงแยกทีละคำ/กลุ่มคำ เพื่อให้เด็กฝึกฟังคำยากได้ชัดเจน
+                const wordBtnsContainer = document.getElementById('studioWordButtons');
+                if (wordBtnsContainer) {
+                    const tokens = this.tokenizeForWordButtons(item.text);
+                    wordBtnsContainer.innerHTML = tokens.map(token => `
+                        <button onclick="Studio.speakSingleToken('${token.replace(/'/g, "\\'")}')" class="bg-white hover:bg-brand-blue hover:text-white text-brand-darkBlue border-2 border-sky-300 px-5 py-2.5 rounded-2xl font-extrabold reading-text text-xl md:text-2xl transition shadow-sm flex items-center gap-2 btn-kid">
+                            <i class="fa-solid fa-volume-high text-base text-brand-orange"></i> <span>${token}</span>
+                        </button>
+                    `).join('');
+                }
+
+                // Render comprehension question if present
+                const qBox = document.getElementById('studioQuestionBox');
+                if (lesson.question && lesson.question.q) {
+                    qBox.classList.remove('hidden');
+                    document.getElementById('studioQuestionText').textContent = lesson.question.q;
+                    const optionBadges = ['ก', 'ข', 'ค', 'ง'];
+                    document.getElementById('studioQuestionOptions').innerHTML = (lesson.question.options || []).map((opt, idx) => `
+                        <button onclick="Studio.checkComprehensionAnswer('${opt.replace(/'/g, "\\'")}', '${lesson.question.answer.replace(/'/g, "\\'")}')" class="bg-white hover:bg-sky-100 border-2 border-sky-200 hover:border-brand-blue rounded-2xl p-4 md:p-5 text-left reading-text text-xl md:text-2xl font-extrabold text-slate-800 transition flex items-center gap-3.5 shadow-sm btn-kid">
+                            <span class="w-10 h-10 rounded-xl bg-sky-100 text-brand-darkBlue flex items-center justify-center font-sans text-lg font-extrabold shrink-0">${optionBadges[idx] || '•'}</span>
+                            <span>${opt}</span>
+                        </button>
+                    `).join('');
+                } else {
+                    qBox.classList.add('hidden');
+                }
+
+                // Reset 3 separated stages when item changes
+                this.resetStages();
+            },
+
+            checkComprehensionAnswer(selected, correct) {
+                if (selected === correct) {
+                    App.toast('ตอบคำถามจากเรื่องที่อ่านถูกต้อง! เก่งมากจ้า +10 เหรียญ 🪙', 'success');
+                    if (State.currentUser && State.currentUser.role === 'student') {
+                        State.currentUser.coins = (State.currentUser.coins || 0) + 10;
+                        App.updateHeaderUI();
+                    }
+                } else {
+                    App.toast('ยังไม่ถูกนะจ๊ะ ลองอ่านทบทวนเนื้อเรื่องอีกครั้งนะ', 'warning');
+                }
+            },
+
+            resetStages() {
+                State.studio.hasTranscribed = false;
+                State.studio.hasEvaluated = false;
+                State.studio.hasAiAnalyzed = false;
+                State.studio.lastEvaluation = null;
+
+                document.getElementById('sttTranscriptInput').value = '';
+                document.getElementById('recStatusBadge').textContent = 'พร้อมบันทึกเสียง';
+                document.getElementById('evalStatusBadge').textContent = 'รอการตรวจจริง';
+                document.getElementById('evalEmptyState').classList.remove('hidden');
+                document.getElementById('evalResultBox').classList.add('hidden');
+                document.getElementById('btnSaveAttempt').disabled = true;
+
+                document.getElementById('aiStatusBadge').textContent = 'รอเรียกใช้งาน AI';
+                document.getElementById('aiEmptyState').classList.remove('hidden');
+                document.getElementById('aiResultBox').classList.add('hidden');
+            },
+
+            // แยกคำสำหรับสร้างปุ่มกดฟังทีละคำ (รองรับบทพยัญชนะ เช่น "ก ไก่" หรือการประสมคำ "ข อา ขา")
+            tokenizeForWordButtons(text) {
+                const rawParts = text.trim().split(/\s+/);
+                const combined = [];
+                for (let i = 0; i < rawParts.length; i++) {
+                    // กรณีสะกดคำ เช่น "ข อา ขา"
+                    if (i + 2 < rawParts.length && rawParts[i].length === 1 && rawParts[i + 1].startsWith('อ')) {
+                        combined.push(`${rawParts[i]} ${rawParts[i + 1]} ${rawParts[i + 2]}`);
+                        i += 2;
+                    }
+                    // กรณีพยัญชนะคู่คำ เช่น "ก ไก่"
+                    else if (i + 1 < rawParts.length && rawParts[i].length === 1 && THAI_PHONETIC_DICTIONARY[`${rawParts[i]} ${rawParts[i + 1]}`]) {
+                        combined.push(`${rawParts[i]} ${rawParts[i + 1]}`);
+                        i += 1;
+                    } else {
+                        combined.push(rawParts[i]);
+                    }
+                }
+                return combined;
+            },
+
+            // แปลงข้อความภาษาไทยให้เป็นคำอ่านที่ชัดเจนที่สุดสำหรับระบบสังเคราะห์เสียง (Thai Phonetic Normalizer)
+            normalizeThaiForSpeech(rawText) {
+                if (!rawText) return '';
+                let normalized = rawText.trim();
+
+                // 1. แทนที่วลีหรือคำเฉพาะจากพจนานุกรมคำอ่าน (เรียงจากคำยาวไปคำสั้น)
+                const sortedKeys = Object.keys(THAI_PHONETIC_DICTIONARY).sort((a, b) => b.length - a.length);
+                sortedKeys.forEach(key => {
+                    if (key.length > 1 && normalized.includes(key)) {
+                        normalized = normalized.split(key).join(THAI_PHONETIC_DICTIONARY[key]);
+                    }
+                });
+
+                // 2. แปลงพยัญชนะไทยตัวเดียวโดด ๆ (เช่น "ก" -> "กอ") ไม่ให้ระบบอ่านข้ามหรืออ่านเป็นตัวย่อผิด
+                normalized = normalized.split(/\s+/).map(token => {
+                    if (token.length === 1 && THAI_PHONETIC_DICTIONARY[token]) {
+                        return THAI_PHONETIC_DICTIONARY[token];
+                    }
+                    return token;
+                }).join(' ');
+
+                return normalized;
+            },
+
+            // ค้นหาเสียงภาษาไทยที่ชัดเจนที่สุดในเครื่องของผู้ใช้
+            getBestThaiVoice() {
+                if (!('speechSynthesis' in window)) return null;
+                const voices = window.speechSynthesis.getVoices();
+                const thaiVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('th') || v.name.toLowerCase().includes('thai') || v.name.includes('ไทย')));
+                if (!thaiVoices.length) return null;
+                // ให้ความสำคัญกับเสียง Google Thai / Kanya / Premwadee / Pattara ที่ออกเสียงวรรณยุกต์ชัด
+                return thaiVoices.find(v => /Premwadee|Kanya|Google|Pattara|Narisa/i.test(v.name)) || thaiVoices[0];
+            },
+
+            // 1. Text-to-Speech Thai (อ่านทั้งชุดการอ่านด้วยคำอ่าน phonetic ที่ปรับจังหวะชัดเจน)
+            speakTarget(rate = 0.88) {
+                const lesson = this.getCurrentLesson();
+                const item = lesson.items[State.studio.itemIndex] || lesson.items[0];
+                const speechScript = item.phonetic || this.normalizeThaiForSpeech(item.text);
+                this.speakText(speechScript, rate);
+            },
+
+            // อ่านเฉพาะคำที่นักเรียนคลิก
+            speakSingleToken(token) {
+                const phoneticToken = THAI_PHONETIC_DICTIONARY[token] || this.normalizeThaiForSpeech(token);
+                this.speakText(phoneticToken, 0.8);
+            },
+
+            // อ่านเน้นทีละคำ/ทีละวรรคอย่างช้า ๆ ชัด ๆ สำหรับฝึกออกเสียงตาม
+            speakWordByWord() {
+                const lesson = this.getCurrentLesson();
+                const item = lesson.items[State.studio.itemIndex] || lesson.items[0];
+                const chunks = item.phonetic
+                    ? item.phonetic.split(',').map(s => s.trim()).filter(Boolean)
+                    : this.tokenizeForWordButtons(item.text).map(t => this.normalizeThaiForSpeech(t));
+
+                this.speakSequentialChunks(chunks, 0.75, 450);
+            },
+
+            // ระบบอ่านต่อเนื่องทีละส่วนพร้อมเว้นจังหวะหยุดหายใจตามธรรมชาติ
+            speakSequentialChunks(chunks, rate = 0.85, pauseMs = 300) {
+                if (!('speechSynthesis' in window)) {
+                    App.toast('เบราว์เซอร์นี้ไม่รองรับระบบอ่านออกเสียง TTS', 'warning');
+                    return;
+                }
+                window.speechSynthesis.cancel();
+                const bestVoice = this.getBestThaiVoice();
+                let currentIndex = 0;
+
+                const speakNext = () => {
+                    if (currentIndex >= chunks.length) return;
+                    const part = chunks[currentIndex].replace(/-/g, ' ');
+                    const utter = new SpeechSynthesisUtterance(part);
+                    utter.lang = 'th-TH';
+                    utter.rate = rate;
+                    utter.pitch = 1.02;
+                    if (bestVoice) utter.voice = bestVoice;
+
+                    utter.onend = () => {
+                        currentIndex++;
+                        if (currentIndex < chunks.length) {
+                            setTimeout(speakNext, pauseMs);
+                        }
+                    };
+                    window.speechSynthesis.speak(utter);
+                };
+
+                speakNext();
+            },
+
+            speakText(text, rate = 0.88) {
+                if (!('speechSynthesis' in window)) {
+                    App.toast('เบราว์เซอร์นี้ไม่รองรับระบบอ่านออกเสียง TTS', 'warning');
+                    return;
+                }
+                const prepared = this.normalizeThaiForSpeech(text);
+                // หากมีเครื่องหมายจุลภาค (,) คั่นจังหวะการอ่าน ให้ส่งเข้าตัวอ่านเว้นจังหวะเพื่อให้ชัดเจนทุกวรรค
+                if (prepared.includes(',')) {
+                    const chunks = prepared.split(',').map(s => s.trim()).filter(Boolean);
+                    this.speakSequentialChunks(chunks, rate, rate < 0.75 ? 420 : 240);
+                    return;
+                }
+
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(prepared.replace(/-/g, ' '));
+                utter.lang = 'th-TH';
+                utter.rate = rate;
+                utter.pitch = 1.02;
+                const bestVoice = this.getBestThaiVoice();
+                if (bestVoice) utter.voice = bestVoice;
+                window.speechSynthesis.speak(utter);
+            },
+
+            // 2. Stage 1: Recording & Speech-to-Text (Separated from evaluation)
+            async toggleRecording() {
+                if (State.studio.isRecording) {
+                    this.stopRecording();
+                    return;
+                }
+
+                const btn = document.getElementById('btnRecordToggle');
+                const icon = document.getElementById('recMicIcon');
+                State.studio.isRecording = true;
+                btn.classList.replace('bg-brand-orange', 'bg-rose-600');
+                btn.classList.add('animate-pulse');
+                icon.className = 'fa-solid fa-stop';
+                document.getElementById('recStatusBadge').textContent = 'กำลังฟังเสียงพูดภาษาไทย...';
+                document.getElementById('recTimerText').textContent = 'กำลังบันทึกเสียง... คลิกอีกครั้งเมื่ออ่านจบ';
+
+                // Start Web Speech API (Thai STT)
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (SpeechRecognition) {
+                    const recognition = new SpeechRecognition();
+                    recognition.lang = 'th-TH';
+                    recognition.continuous = false;
+                    recognition.interimResults = true;
+                    recognition.onresult = (event) => {
+                        let transcript = '';
+                        for (let i = 0; i < event.results.length; i++) {
+                            transcript += event.results[i][0].transcript;
+                        }
+                        document.getElementById('sttTranscriptInput').value = transcript.trim();
+                        this.onTranscriptChanged();
+                    };
+                    recognition.onerror = () => {
+                        document.getElementById('recStatusBadge').textContent = 'โหมดบันทึกไมโครโฟน';
+                    };
+                    try { recognition.start(); State.studio.recognition = recognition; } catch (e) {}
+                }
+
+                // Start MediaRecorder for real audio capture
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        const mediaRecorder = new MediaRecorder(stream);
+                        State.studio.audioChunks = [];
+                        mediaRecorder.ondataavailable = (e) => {
+                            if (e.data.size > 0) State.studio.audioChunks.push(e.data);
+                        };
+                        mediaRecorder.onstop = () => {
+                            const blob = new Blob(State.studio.audioChunks, { type: 'audio/webm' });
+                            const url = URL.createObjectURL(blob);
+                            State.studio.recordedAudioUrl = url;
+                            document.getElementById('studentAudioPlayer').src = url;
+                            document.getElementById('recordedAudioBox').classList.remove('hidden');
+
+                            const reader = new FileReader();
+                            reader.onloadend = () => { State.studio.recordedBase64 = reader.result; };
+                            reader.readAsDataURL(blob);
+                            stream.getTracks().forEach(t => t.stop());
+                        };
+                        mediaRecorder.start();
+                        State.studio.mediaRecorder = mediaRecorder;
+                    } catch (err) {
+                        App.toast('เปิดโหมดจำลองการถอดเสียง (สามารถพิมพ์หรือกดปุ่มจำลองด้านล่างได้)', 'info');
+                    }
+                }
+            },
+
+            stopRecording() {
+                State.studio.isRecording = false;
+                const btn = document.getElementById('btnRecordToggle');
+                const icon = document.getElementById('recMicIcon');
+                btn.classList.replace('bg-rose-600', 'bg-brand-orange');
+                btn.classList.remove('animate-pulse');
+                icon.className = 'fa-solid fa-microphone';
+                document.getElementById('recStatusBadge').textContent = 'ถอดเสียงเสร็จสิ้น (รอตรวจความถูกต้อง)';
+                document.getElementById('recTimerText').textContent = 'บันทึกเสียงเสร็จแล้ว กดปุ่มในขั้นตอนที่ 2 เพื่อตรวจความถูกต้อง';
+
+                if (State.studio.recognition) {
+                    try { State.studio.recognition.stop(); } catch (e) {}
+                }
+                if (State.studio.mediaRecorder && State.studio.mediaRecorder.state !== 'inactive') {
+                    try { State.studio.mediaRecorder.stop(); } catch (e) {}
+                }
+
+                // If browser didn't produce STT automatically in iframe preview, guide user
+                const currentText = document.getElementById('sttTranscriptInput').value.trim();
+                if (!currentText) {
+                    App.toast('หากไมค์ในเบราว์เซอร์ไม่ถอดเสียงอัตโนมัติ สามารถกดปุ่ม "จำลองอ่านถูก" หรือพิมพ์ข้อความที่อ่านได้ทันที', 'info');
+                }
+            },
+
+            simulateTranscript(mode) {
+                const lesson = this.getCurrentLesson();
+                const item = lesson.items[State.studio.itemIndex] || lesson.items[0];
+                const words = item.text.split(/\s+/);
+                if (mode === 'exact') {
+                    document.getElementById('sttTranscriptInput').value = item.text;
+                } else {
+                    const partial = words.filter((_, idx) => idx !== 1).join(' ');
+                    document.getElementById('sttTranscriptInput').value = partial;
+                }
+                this.onTranscriptChanged();
+                App.toast('ใส่ข้อความจากการถอดเสียงแล้ว กรุณากดปุ่มตรวจในขั้นตอนที่ 2', 'info');
+            },
+
+            onTranscriptChanged() {
+                const val = document.getElementById('sttTranscriptInput').value.trim();
+                State.studio.hasTranscribed = val.length > 0;
+                // Whenever transcript changes, invalidate previous evaluation & AI result so unverified assessments are never shown
+                State.studio.hasEvaluated = false;
+                State.studio.hasAiAnalyzed = false;
+                document.getElementById('evalEmptyState').classList.remove('hidden');
+                document.getElementById('evalResultBox').classList.add('hidden');
+                document.getElementById('aiEmptyState').classList.remove('hidden');
+                document.getElementById('aiResultBox').classList.add('hidden');
+                document.getElementById('btnSaveAttempt').disabled = true;
+            },
+
+            // 3. Stage 2: Explicit Accuracy Evaluation (Separated from STT and AI)
+            evaluateReadingAccuracy() {
+                const transcript = document.getElementById('sttTranscriptInput').value.trim();
+                if (!transcript) {
+                    App.toast('กรุณาอัดเสียงพูดหรือระบุข้อความที่ถอดเสียงในขั้นตอนที่ 1 ก่อนประเมินผล', 'warning');
+                    return;
+                }
+
+                const lesson = this.getCurrentLesson();
+                const item = lesson.items[State.studio.itemIndex] || lesson.items[0];
+                const targetWords = item.text.trim().split(/\s+/);
+                const cleanTranscript = transcript.replace(/\s+/g, '');
+
+                let matchedCount = 0;
+                const missedWords = [];
+                const wordDiffHtml = targetWords.map(word => {
+                    const isPresent = transcript.includes(word) || cleanTranscript.includes(word);
+                    if (isPresent) {
+                        matchedCount++;
+                        return `<span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300"><i class="fa-solid fa-check text-xs"></i> ${word}</span>`;
+                    } else {
+                        missedWords.push(word);
+                        return `<span class="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-800 border border-rose-300"><i class="fa-solid fa-xmark text-xs"></i> ${word}</span>`;
+                    }
+                }).join('');
+
+                const accuracy = Math.round((matchedCount / targetWords.length) * 100);
+                const starsEarned = accuracy >= 90 ? 3 : accuracy >= 70 ? 2 : accuracy >= 40 ? 1 : 0;
+
+                // Recommend Exercise based on missed words & lesson category
+                let recommendation = `ทบทวนบทเรียนหมวด "${lesson.category}" และลองเล่นเกมเรียงพยางค์`;
+                if (missedWords.length === 0) {
+                    recommendation = `อ่านได้แม่นยำมาก! แนะนำให้ลองท้าทายบทเรียนถัดไป หรือเล่นเกมอ่านให้ถูกต้อง`;
+                } else {
+                    recommendation = `ฝึกออกเสียงคำว่า "${missedWords.join(', ')}" ช้า ๆ ชัด ๆ 3 รอบ แล้วลองเล่นเกมจับคู่คำกับภาพ`;
+                }
+
+                State.studio.hasEvaluated = true;
+                State.studio.lastEvaluation = {
+                    lessonId: lesson.id,
+                    lessonTitle: lesson.title,
+                    targetText: item.text,
+                    transcript,
+                    accuracy,
+                    starsEarned,
+                    missedWords,
+                    recommendation
+                };
+
+                document.getElementById('evalStatusBadge').textContent = 'ตรวจความถูกต้องแล้ว';
+                document.getElementById('evalEmptyState').classList.add('hidden');
+                document.getElementById('evalResultBox').classList.remove('hidden');
+                document.getElementById('evalAccuracyScore').textContent = `${accuracy}%`;
+                document.getElementById('evalStarsEarned').innerHTML = '⭐'.repeat(starsEarned) || '<span class="text-xs text-slate-400">พยายามอีกนิดนะ</span>';
+                document.getElementById('evalWordDiffContainer').innerHTML = wordDiffHtml;
+                document.getElementById('evalMissedWordsText').textContent = missedWords.length ? missedWords.join(', ') : 'ไม่มีคำที่ตกหล่น อ่านถูกต้องครบถ้วน!';
+                document.getElementById('evalRecommendedExercise').textContent = recommendation;
+                document.getElementById('btnSaveAttempt').disabled = false;
+
+                App.toast(`ตรวจความถูกต้องเสร็จแล้ว ได้ความแม่นยำ ${accuracy}%`, 'success');
+            },
+
+            // 4. Stage 3: Independent AI Reading Analysis (via Google Apps Script or Local Educator Engine)
+            async requestAiAnalysis() {
+                if (!State.studio.hasEvaluated || !State.studio.lastEvaluation) {
+                    App.toast('กรุณากดปุ่ม "ตรวจความถูกต้องของการอ่าน" ในขั้นตอนที่ 2 ก่อนเรียกใช้ AI วิเคราะห์', 'warning');
+                    return;
+                }
+
+                const evalData = State.studio.lastEvaluation;
+                const lesson = this.getCurrentLesson();
+
+                App.showLoading('พี่ฮูก AI กำลังวิเคราะห์การอ่านของหนู...');
+                try {
+                    let aiText = '';
+                    let phoneticTip = '';
+
+                    if (State.apiEndpoint) {
+                        const res = await ApiService.post({
+                            action: 'analyzeReadingAI',
+                            grade: lesson.grade,
+                            targetText: evalData.targetText,
+                            transcript: evalData.transcript,
+                            missedWords: evalData.missedWords
+                        });
+                        if (res && res.aiFeedback) {
+                            aiText = res.aiFeedback;
+                            phoneticTip = 'วิเคราะห์ผ่าน Gemini API บน Google Apps Script เรียบร้อยแล้ว';
+                        }
+                    }
+
+                    if (!aiText) {
+                        // Intelligent Thai Phonetics & Reading Coach Analysis
+                        if (evalData.accuracy === 100) {
+                            aiText = `เก่งมากเลยจ้า! หนูออกเสียงประโยค "${evalData.targetText}" ได้ครบทุกพยางค์และชัดเจนมาก รักษามาตรฐานการอ่านแบบนี้นะจ๊ะ`;
+                            phoneticTip = `จุดเด่น: ออกเสียงพยัญชนะต้นและสระในหมวด "${lesson.category}" ได้แม่นยำ พร้อมก้าวสู่บทเรียนระดับถัดไป`;
+                        } else {
+                            aiText = `หนูมีความตั้งใจดีมากจ้า! อ่านได้ถูกต้องถึง ${evalData.accuracy}% แต่ยังมีคำที่ตกหล่นหรือออกเสียงไม่ชัด ได้แก่ "${evalData.missedWords.join(', ')}" ลองกดปุ่มฟังเสียงครูแบบช้า ๆ แล้วพูดตามทีละคำนะ`;
+                            phoneticTip = `คำแนะนำการฝึก: สังเกตตัวสะกดและสระของคำว่า "${evalData.missedWords[0] || ''}" อ้าปากออกเสียงให้เต็มคำ ไม่รวบพยางค์`;
+                        }
+                    }
+
+                    State.studio.hasAiAnalyzed = true;
+                    document.getElementById('aiStatusBadge').textContent = 'วิเคราะห์ด้วย AI สำเร็จ';
+                    document.getElementById('aiEmptyState').classList.add('hidden');
+                    document.getElementById('aiResultBox').classList.remove('hidden');
+                    document.getElementById('aiFeedbackText').textContent = aiText;
+                    document.getElementById('aiPhoneticTip').textContent = phoneticTip;
+                    App.toast('พี่ฮูก AI วิเคราะห์ผลการอ่านเรียบร้อยแล้ว!', 'info');
+                } finally {
+                    App.hideLoading();
+                }
+            },
+
+            async saveReadingRecord() {
+                if (!State.studio.hasEvaluated || !State.studio.lastEvaluation) return;
+                const evalData = State.studio.lastEvaluation;
+                const user = State.currentUser;
+
+                const newLog = {
+                    id: 'LOG-' + Date.now(),
+                    timestamp: new Date().toLocaleString('th-TH'),
+                    studentId: user ? user.id : 'GUEST',
+                    studentName: user ? user.name : 'ผู้เยี่ยมชม',
+                    grade: user && user.grade ? user.grade : 'P1',
+                    lessonId: evalData.lessonId,
+                    lessonTitle: evalData.lessonTitle,
+                    targetText: evalData.targetText,
+                    transcript: evalData.transcript,
+                    missedWords: evalData.missedWords,
+                    accuracy: evalData.accuracy,
+                    audioDataUrl: State.studio.recordedAudioUrl || ''
+                };
+
+                State.readingLogs.push(newLog);
+
+                if (user && user.role === 'student') {
+                    user.stars = (user.stars || 0) + evalData.starsEarned;
+                    user.coins = (user.coins || 0) + (evalData.accuracy >= 70 ? 15 : 5);
+                    if (evalData.accuracy >= 70 && !user.completedLessons.includes(evalData.lessonId)) {
+                        user.completedLessons.push(evalData.lessonId);
+                    }
+                    App.updateHeaderUI();
+                }
+
+                // Sync to Google Apps Script if configured
+                if (State.apiEndpoint) {
+                    ApiService.post({
+                        action: 'saveReadingLog',
+                        ...newLog,
+                        audioBase64: State.studio.recordedBase64 || ''
+                    });
+                }
+
+                document.getElementById('btnSaveAttempt').disabled = true;
+                App.toast(`บันทึกผลการเรียนสำเร็จ! ได้รับ +${evalData.starsEarned} ⭐`, 'success');
+            },
+
+            async uploadAudioToDrive() {
+                if (!State.studio.recordedBase64) {
+                    App.toast('กรุณาอัดเสียงก่อนส่งไฟล์ขึ้น Google Drive', 'warning');
+                    return;
+                }
+                if (!State.apiEndpoint) {
+                    App.toast('จำลองการเตรียมไฟล์เสียงสำเร็จ! (ตั้งค่า Google Apps Script URL มุมขวาบนเพื่ออัปโหลดเข้า Google Drive จริง)', 'info');
+                    return;
+                }
+                App.showLoading('กำลังอัปโหลดไฟล์เสียงไปยัง Google Drive...');
+                const res = await ApiService.post({
+                    action: 'saveReadingLog',
+                    studentId: State.currentUser?.id || '1001',
+                    studentName: State.currentUser?.name || '',
+                    lessonId: State.studio.lessonId,
+                    audioBase64: State.studio.recordedBase64
+                });
+                App.hideLoading();
+                if (res && res.status === 'ok') {
+                    App.toast('อัปโหลดไฟล์เสียงเข้า Google Drive เรียบร้อยแล้ว!', 'success');
+                }
+            }
+        };
+
+        /**
+         * ============================================================================
+         * MODULE 6: 5 INTERACTIVE THAI READING GAMES
+         * ============================================================================
+         */
+        const GAME_DATA = {
+            match: [
+                { word: 'ช้างป่า', options: [{ emoji: '🐘', label: 'ช้างป่า' }, { emoji: '🐇', label: 'กระต่าย' }, { emoji: '🐟', label: 'ปลาตะเพียน' }, { emoji: '🐓', label: 'แม่ไก่' }] },
+                { word: 'ดวงจันทร์', options: [{ emoji: '🌕', label: 'ดวงจันทร์' }, { emoji: '☀️', label: 'ดวงอาทิตย์' }, { emoji: '🌧️', label: 'สายฝน' }, { emoji: '🌈', label: 'รุ้งกินน้ำ' }] },
+                { word: 'โรงเรียน', options: [{ emoji: '🏫', label: 'โรงเรียน' }, { emoji: '🏥', label: 'โรงพยาบาล' }, { emoji: '🏡', label: 'บ้านพัก' }, { emoji: '⛺', label: 'เต็นท์' }] }
+            ],
+            syllable: [
+                { hint: 'คำควบกล้ำ หมายถึง สัตว์ป่ามีเขา', correct: ['กวาง', 'ป่า', 'เดิน', 'มา'], scrambled: ['เดิน', 'กวาง', 'มา', 'ป่า'] },
+                { hint: 'เรียงเป็นประโยคที่ถูกต้อง', correct: ['เด็ก', 'ดี', 'ตั้งใจ', 'อ่าน'], scrambled: ['อ่าน', 'เด็ก', 'ตั้งใจ', 'ดี'] },
+                { hint: 'คำหลายพยางค์ หมายถึง การปลูกพืชเลี้ยงสัตว์', correct: ['เก', 'ษตร', 'กร', 'ไทย'], scrambled: ['กร', 'เก', 'ไทย', 'ษตร'] }
+            ],
+            fill: [
+                { sentence: 'แม่ไก่ตัวอ้วนกำลังฟัก ____ อยู่ในเล้า', answer: 'ไข่', choices: ['ไข่', 'ไม้', 'ไฟ', 'ไห'] },
+                { sentence: 'วันศุกร์พวกเราไปดูดวง ____ บนท้องฟ้า', answer: 'จันทร์', choices: ['จันทร์', 'เสาร์', 'อาทิตย์', 'ดาว'] },
+                { sentence: 'ชาวนาปลูก ____ ในทุ่งนากว้างใหญ่', answer: 'ข้าว', choices: ['ข้าว', 'น้ำ', 'ปลา', 'หญ้า'] }
+            ],
+            quiz: [
+                { q: 'คำในข้อใดมีตัวสะกดใน "มาตราแม่กบ"?', answer: 'ภาพวาด', choices: ['ภาพวาด', 'กังวาน', 'ความสุข', 'ดวงดาว'] },
+                { q: 'คำในข้อใดเป็น "คำควบกล้ำแท้"?', answer: 'ครอบครัว', choices: ['ครอบครัว', 'ตลาดนัด', 'สนุกสนาน', 'อร่อยดี'] },
+                { q: 'คำว่า "ทรัพยากร" มีความหมายเกี่ยวข้องกับข้อใดมากที่สุด?', answer: 'สิ่งที่มีคุณค่าตามธรรมชาติ', choices: ['สิ่งที่มีคุณค่าตามธรรมชาติ', 'การเดินทางท่องเที่ยว', 'การเล่นกีฬา', 'การวาดภาพ'] }
+            ],
+            readAloud: [
+                { target: 'เด็กดีมีน้ำใจช่วยเหลือเพื่อน', emoji: '🤝' },
+                { target: 'กวางป่าวิ่งเล่นริมลำคลอง', emoji: '🦌' },
+                { target: 'โรงเรียนบึงงามพัฒนาน่าอยู่', emoji: '🏫' }
+            ]
+        };
+
+        const Games = {
+            initView() {
+                this.startGame(State.games.currentMode || 'match');
+            },
+
+            startGame(mode) {
+                State.games.currentMode = mode;
+                State.games.roundIndex = 0;
+                State.games.syllableBuilt = [];
+
+                ['match', 'syllable', 'fill', 'quiz', 'readAloud'].forEach(m => {
+                    const btn = document.getElementById(`gameTab-${m}`);
+                    if (btn) {
+                        btn.className = m === mode
+                            ? 'game-tab p-3.5 rounded-2xl border-2 border-purple-600 bg-purple-50 font-extrabold text-sm flex flex-col items-center gap-1.5 transition shadow-sm'
+                            : 'game-tab p-3.5 rounded-2xl border-2 border-slate-200 bg-white font-extrabold text-sm flex flex-col items-center gap-1.5 transition hover:border-purple-300';
+                    }
+                });
+
+                this.renderRound();
+            },
+
+            addReward(points = 10, stars = 1, coins = 10) {
+                State.games.sessionScore += points;
+                document.getElementById('gameSessionScore').textContent = State.games.sessionScore;
+                if (State.currentUser && State.currentUser.role === 'student') {
+                    State.currentUser.stars = (State.currentUser.stars || 0) + stars;
+                    State.currentUser.coins = (State.currentUser.coins || 0) + coins;
+                    App.updateHeaderUI();
+                }
+            },
+
+            nextRound(modeList) {
+                State.games.roundIndex = (State.games.roundIndex + 1) % modeList.length;
+                State.games.syllableBuilt = [];
+                this.renderRound();
+            },
+
+            renderRound() {
+                const mode = State.games.currentMode;
+                const arena = document.getElementById('gameArenaContainer');
+                const idx = State.games.roundIndex;
+
+                // GAME 1: จับคู่คำกับภาพ
+                if (mode === 'match') {
+                    const item = GAME_DATA.match[idx % GAME_DATA.match.length];
+                    arena.innerHTML = `
+                        <div class="text-center space-y-6">
+                            <div class="text-xs font-extrabold text-brand-blue uppercase">เกมที่ 1: จับคู่คำศัพท์กับภาพให้ถูกต้อง (ด่าน ${idx + 1}/${GAME_DATA.match.length})</div>
+                            <div class="inline-flex items-center gap-3 bg-sky-50 px-8 py-4 rounded-3xl border-2 border-brand-blue">
+                                <span class="reading-text text-4xl font-extrabold text-slate-900">${item.word}</span>
+                                <button onclick="Studio.speakText('${item.word}')" class="bg-brand-blue text-white w-10 h-10 rounded-full"><i class="fa-solid fa-volume-high"></i></button>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto">
+                                ${item.options.map(opt => `
+                                    <button onclick="Games.checkMatch('${opt.label}', '${item.word}')" class="p-6 rounded-3xl border-2 border-slate-200 hover:border-brand-blue bg-slate-50 hover:bg-sky-50 transition flex flex-col items-center gap-2 btn-kid">
+                                        <span class="text-6xl">${opt.emoji}</span>
+                                        <span class="text-xs font-bold text-slate-400">คลิกเลือกภาพนี้</span>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // GAME 2: เรียงพยางค์
+                else if (mode === 'syllable') {
+                    const item = GAME_DATA.syllable[idx % GAME_DATA.syllable.length];
+                    arena.innerHTML = `
+                        <div class="text-center space-y-6">
+                            <div class="text-xs font-extrabold text-brand-orange uppercase">เกมที่ 2: เรียงพยางค์และคำให้ถูกต้อง (ด่าน ${idx + 1}/${GAME_DATA.syllable.length})</div>
+                            <p class="font-bold text-slate-600">${item.hint}</p>
+                            <div class="min-h-[72px] bg-orange-50 rounded-2xl p-4 border-2 border-dashed border-brand-orange flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto">
+                                ${State.games.syllableBuilt.length
+                                    ? State.games.syllableBuilt.map((syl, i) => `<span class="bg-brand-orange text-white font-extrabold px-4 py-2 rounded-xl text-xl">${syl}</span>`).join('')
+                                    : `<span class="text-slate-400 text-sm font-bold">คลิกพยางค์ด้านล่างตามลำดับ...</span>`
+                                }
+                            </div>
+                            <div class="flex flex-wrap justify-center gap-3">
+                                ${item.scrambled.map(syl => `
+                                    <button onclick="Games.pickSyllable('${syl}')" class="bg-white border-2 border-slate-300 hover:border-brand-orange px-6 py-3 rounded-2xl text-2xl font-extrabold btn-kid">
+                                        ${syl}
+                                    </button>
+                                `).join('')}
+                            </div>
+                            <div class="flex justify-center gap-3">
+                                <button onclick="State.games.syllableBuilt=[]; Games.renderRound();" class="bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs">ล้างคำตอบ</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // GAME 3: เติมคำในช่องว่าง
+                else if (mode === 'fill') {
+                    const item = GAME_DATA.fill[idx % GAME_DATA.fill.length];
+                    arena.innerHTML = `
+                        <div class="text-center space-y-6">
+                            <div class="text-xs font-extrabold text-brand-green uppercase">เกมที่ 3: เติมคำลงในช่องว่างให้สมบูรณ์</div>
+                            <div class="reading-text text-2xl md:text-3xl font-extrabold text-slate-800 bg-emerald-50 p-6 rounded-3xl border-2 border-emerald-200 max-w-2xl mx-auto">
+                                ${item.sentence}
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto">
+                                ${item.choices.map(ch => `
+                                    <button onclick="Games.checkSimpleChoice('${ch}', '${item.answer}', 'fill')" class="bg-white border-2 border-slate-200 hover:border-brand-green py-4 rounded-2xl text-2xl font-extrabold btn-kid">
+                                        ${ch}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // GAME 4: เลือกคำตอบ
+                else if (mode === 'quiz') {
+                    const item = GAME_DATA.quiz[idx % GAME_DATA.quiz.length];
+                    arena.innerHTML = `
+                        <div class="text-center space-y-6 max-w-2xl mx-auto w-full">
+                            <div class="text-xs font-extrabold text-purple-600 uppercase">เกมที่ 4: เลือกคำตอบวัดความรู้หลักภาษาไทย</div>
+                            <h3 class="text-2xl font-extrabold text-slate-800">${item.q}</h3>
+                            <div class="grid sm:grid-cols-2 gap-3">
+                                ${item.choices.map(ch => `
+                                    <button onclick="Games.checkSimpleChoice('${ch}', '${item.answer}', 'quiz')" class="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 p-4 rounded-2xl text-lg font-extrabold text-slate-800 btn-kid">
+                                        ${ch}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // GAME 5: เกมอ่านให้ถูกต้อง
+                else if (mode === 'readAloud') {
+                    const item = GAME_DATA.readAloud[idx % GAME_DATA.readAloud.length];
+                    arena.innerHTML = `
+                        <div class="text-center space-y-5 max-w-xl mx-auto">
+                            <div class="text-xs font-extrabold text-rose-600 uppercase">เกมที่ 5: อ่านออกเสียงประโยคนี้ให้ถูกต้อง</div>
+                            <div class="text-6xl">${item.emoji}</div>
+                            <div class="reading-text text-3xl font-extrabold text-slate-900 bg-rose-50 p-5 rounded-3xl border-2 border-rose-200">
+                                ${item.target}
+                            </div>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <button onclick="Studio.speakText('${item.target}')" class="bg-sky-100 text-brand-darkBlue font-bold px-4 py-2.5 rounded-xl text-xs">
+                                    <i class="fa-solid fa-volume-high"></i> ฟังเสียงต้นฉบับ
+                                </button>
+                                <button onclick="document.getElementById('gameReadInput').value='${item.target}'" class="bg-slate-100 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs">
+                                    <i class="fa-solid fa-microphone"></i> จำลองอ่านออกเสียงถูกต้อง
+                                </button>
+                            </div>
+                            <input id="gameReadInput" placeholder="ข้อความจากการอ่านออกเสียง..." class="w-full p-3 border-2 rounded-2xl text-center font-bold text-lg">
+                            <button onclick="Games.checkReadAloudGame('${item.target}')" class="bg-rose-500 hover:bg-rose-600 text-white font-extrabold px-8 py-3 rounded-2xl btn-kid">
+                                ส่งคำตอบตรวจการอ่าน
+                            </button>
+                        </div>
+                    `;
+                }
+            },
+
+            checkMatch(selected, correct) {
+                if (selected === correct) {
+                    this.addReward(15, 1, 10);
+                    App.toast('จับคู่คำกับภาพถูกต้อง! +1 ⭐ +10 🪙', 'success');
+                    this.nextRound(GAME_DATA.match);
+                } else {
+                    App.toast('ยังไม่ตรงกับภาพนะจ๊ะ ลองดูคำศัพท์อีกครั้ง!', 'warning');
+                }
+            },
+
+            pickSyllable(syl) {
+                const item = GAME_DATA.syllable[State.games.roundIndex % GAME_DATA.syllable.length];
+                State.games.syllableBuilt.push(syl);
+                this.renderRound();
+
+                if (State.games.syllableBuilt.length === item.correct.length) {
+                    if (State.games.syllableBuilt.join('') === item.correct.join('')) {
+                        this.addReward(20, 1, 15);
+                        App.toast('เรียงพยางค์ถูกต้องยอดเยี่ยม! +1 ⭐ +15 🪙', 'success');
+                        setTimeout(() => this.nextRound(GAME_DATA.syllable), 600);
+                    } else {
+                        App.toast('ลำดับพยางค์ยังไม่ถูก ลองเรียงใหม่อีกครั้งนะ', 'warning');
+                        State.games.syllableBuilt = [];
+                        setTimeout(() => this.renderRound(), 600);
+                    }
+                }
+            },
+
+            checkSimpleChoice(choice, answer, key) {
+                if (choice === answer) {
+                    this.addReward(15, 1, 10);
+                    App.toast('ถูกต้องแล้วจ้า! เก่งมาก +1 ⭐ +10 🪙', 'success');
+                    this.nextRound(GAME_DATA[key]);
+                } else {
+                    App.toast('ยังไม่ถูกนะจ๊ะ ลองเลือกคำตอบใหม่อีกครั้ง', 'warning');
+                }
+            },
+
+            checkReadAloudGame(target) {
+                const val = document.getElementById('gameReadInput').value.trim();
+                if (!val) {
+                    App.toast('กรุณาอ่านออกเสียงหรือกดปุ่มจำลองเสียงอ่านก่อนตรวจ', 'warning');
+                    return;
+                }
+                if (val.replace(/\s+/g, '') === target.replace(/\s+/g, '')) {
+                    this.addReward(25, 2, 20);
+                    App.toast('อ่านออกเสียงได้ชัดเจนถูกต้อง! รับไปเลย +2 ⭐ +20 🪙', 'success');
+                    this.nextRound(GAME_DATA.readAloud);
+                } else {
+                    App.toast('มีบางพยางค์ยังไม่ตรง ลองอ่านออกเสียงอีกครั้งนะ', 'warning');
+                }
+            }
+        };
+
+        /**
+         * ============================================================================
+         * MODULE 7: TEACHER DASHBOARD & REPORT SYSTEM
+         * ============================================================================
+         */
+        const Teacher = {
+            renderDashboard() {
+                const gradeFilter = document.getElementById('teacherGradeFilter')?.value || 'ALL';
+                const students = State.users.filter(u => u.role === 'student' && (gradeFilter === 'ALL' || u.grade === gradeFilter));
+                const logs = State.readingLogs;
+
+                document.getElementById('tStatTotalStudents').textContent = `${students.length} คน`;
+                const avgAcc = logs.length ? Math.round(logs.reduce((s, l) => s + (l.accuracy || 0), 0) / logs.length) : 0;
+                document.getElementById('tStatAvgAccuracy').textContent = `${avgAcc}%`;
+                document.getElementById('tStatTotalLogs').textContent = `${logs.length} ครั้ง`;
+
+                const allMissed = logs.flatMap(l => l.missedWords || []);
+                document.getElementById('tStatCommonMistake').textContent = allMissed.length ? allMissed.slice(0, 3).join(', ') : 'ไม่มีคำผิดที่พบบ่อย';
+
+                // Student Table
+                const tbody = document.getElementById('teacherStudentTableBody');
+                tbody.innerHTML = students.map(stu => {
+                    const stuLogs = logs.filter(l => l.studentId === stu.id);
+                    const stuAvg = stuLogs.length ? Math.round(stuLogs.reduce((s, l) => s + l.accuracy, 0) / stuLogs.length) : 85;
+                    return `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-mono font-bold text-xs">${stu.id}</td>
+                            <td class="p-3 font-bold text-slate-800">${stu.avatar || '🧒'} ${stu.name}</td>
+                            <td class="p-3"><span class="bg-sky-100 text-brand-darkBlue px-2 py-0.5 rounded-lg text-xs font-bold">${stu.grade}</span></td>
+                            <td class="p-3 font-bold text-amber-600">${stu.stars || 0} ⭐</td>
+                            <td class="p-3 font-extrabold text-brand-green">${stuAvg}%</td>
+                            <td class="p-3">
+                                <select onchange="Teacher.changeStudentGroup('${stu.id}', this.value)" class="bg-slate-100 border rounded-lg px-2 py-1 text-xs font-bold">
+                                    <option value="ดีเยี่ยม" ${stu.group === 'ดีเยี่ยม' ? 'selected' : ''}>กลุ่มดีเยี่ยม</option>
+                                    <option value="ดีมาก" ${stu.group === 'ดีมาก' ? 'selected' : ''}>กลุ่มดีมาก</option>
+                                    <option value="กำลังพัฒนา" ${stu.group === 'กำลังพัฒนา' ? 'selected' : ''}>กลุ่มกำลังพัฒนา</option>
+                                    <option value="ต้องเสริมทักษะ" ${stu.group === 'ต้องเสริมทักษะ' ? 'selected' : ''}>กลุ่มต้องเสริมทักษะ</option>
+                                </select>
+                            </td>
+                            <td class="p-3 text-right">
+                                <button onclick="Teacher.inspectStudent('${stu.id}')" class="bg-sky-50 hover:bg-sky-100 text-brand-blue font-bold px-2.5 py-1 rounded-lg text-xs">
+                                    ดูผลรายบุคคล
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Ability Groups Summary
+                const groups = ['ดีเยี่ยม', 'ดีมาก', 'กำลังพัฒนา', 'ต้องเสริมทักษะ'];
+                document.getElementById('teacherGroupsContainer').innerHTML = groups.map(g => {
+                    const list = students.filter(s => s.group === g);
+                    return `
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div class="flex justify-between font-extrabold text-xs text-slate-700 mb-1">
+                                <span>กลุ่ม${g}</span>
+                                <span class="text-brand-blue">${list.length} คน</span>
+                            </div>
+                            <div class="text-xs text-slate-500">${list.map(s => s.name).join(', ') || 'ยังไม่มีนักเรียนในกลุ่มนี้'}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Audio & Mispronounced Words Logs
+                document.getElementById('teacherAudioLogsBody').innerHTML = logs.slice().reverse().map(log => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-bold">${log.studentName} <span class="text-xs text-slate-400">(${log.studentId})</span></td>
+                        <td class="p-3 text-xs font-semibold">${log.lessonTitle}</td>
+                        <td class="p-3 reading-text font-bold">${log.targetText}</td>
+                        <td class="p-3 text-xs font-bold ${log.missedWords && log.missedWords.length ? 'text-rose-600' : 'text-emerald-600'}">
+                            ${log.missedWords && log.missedWords.length ? log.missedWords.join(', ') : 'อ่านครบทุกคำ'}
+                        </td>
+                        <td class="p-3 font-extrabold">${log.accuracy}%</td>
+                        <td class="p-3">
+                            ${log.audioDataUrl
+                                ? `<audio controls src="${log.audioDataUrl}" class="h-8 w-36"></audio>`
+                                : `<button onclick="Studio.speakText('${log.transcript.replace(/'/g, "\\'")}')" class="bg-orange-50 text-brand-orange font-bold px-3 py-1 rounded-lg text-xs"><i class="fa-solid fa-play"></i> ฟังเสียงที่บันทึก</button>`
+                            }
+                        </td>
+                    </tr>
+                `).join('');
+            },
+
+            changeStudentGroup(studentId, newGroup) {
+                const stu = State.users.find(u => u.id === studentId);
+                if (stu) {
+                    stu.group = newGroup;
+                    this.renderDashboard();
+                    App.toast(`อัปเดตกลุ่มความสามารถของ ${stu.name} เป็น "${newGroup}" แล้ว`, 'success');
+                }
+            },
+
+            inspectStudent(studentId) {
+                const stu = State.users.find(u => u.id === studentId);
+                if (!stu) return;
+                App.toast(`${stu.name} (${stu.grade}): สะสม ${stu.stars} ดาว, เรียนจบแล้ว ${(stu.completedLessons || []).length} บทเรียน`, 'info');
+            },
+
+            openAddStudentModal() {
+                App.openModal('addStudentModal');
+            },
+
+            handleSaveNewStudent(e) {
+                e.preventDefault();
+                const id = document.getElementById('newStuId').value.trim();
+                const name = document.getElementById('newStuName').value.trim();
+                const grade = document.getElementById('newStuGrade').value;
+                const pin = document.getElementById('newStuPin').value.trim();
+
+                if (State.users.some(u => u.id === id)) {
+                    App.toast('รหัสนักเรียนนี้มีในระบบแล้ว', 'error');
+                    return;
+                }
+
+                State.users.push({
+                    id, pin, role: 'student', name, grade,
+                    avatar: '🐣', stars: 0, coins: 20,
+                    completedLessons: [], inProgressLessons: [], group: 'กำลังพัฒนา'
+                });
+
+                App.closeModal('addStudentModal');
+                this.renderDashboard();
+                Admin.render();
+                App.toast(`เพิ่มนักเรียน ${name} เข้าระบบเรียบร้อยแล้ว`, 'success');
+            },
+
+            exportReportCSV() {
+                const rows = [
+                    ['รหัสนักเรียน', 'ชื่อ-นามสกุล', 'ระดับชั้น', 'ดาวสะสม', 'เหรียญสะสม', 'กลุ่มความสามารถ', 'จำนวนบทเรียนที่ผ่าน']
+                ];
+                State.users.filter(u => u.role === 'student').forEach(s => {
+                    rows.push([s.id, s.name, s.grade, s.stars || 0, s.coins || 0, s.group || '', (s.completedLessons || []).length]);
+                });
+                const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `รายงานพัฒนาการอ่าน_รร_บึงงามพัฒนา_${new Date().toISOString().slice(0, 10)}.csv`;
+                a.click();
+                App.toast('ดาวน์โหลดรายงานผลการพัฒนาการอ่าน (CSV) สำเร็จ!', 'success');
+            }
+        };
+
+        /**
+         * ============================================================================
+         * MODULE 8: ADMIN SYSTEM & BACKEND API CONFIGURATION
+         * ============================================================================
+         */
+        const Admin = {
+            switchTab(tab) {
+                ['lessons', 'accounts', 'deploy'].forEach(t => {
+                    document.getElementById(`adminPanel-${t}`).classList.toggle('hidden', t !== tab);
+                    const btn = document.getElementById(`adminTabBtn-${t}`);
+                    btn.className = t === tab
+                        ? 'admin-tab px-4 py-2 rounded-xl font-bold text-sm bg-indigo-600 text-white'
+                        : 'admin-tab px-4 py-2 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-100';
+                });
+            },
+
+            render() {
+                // Render Lessons List
+                const lessonsEl = document.getElementById('adminLessonsList');
+                if (lessonsEl) {
+                    lessonsEl.innerHTML = State.lessons.map(l => `
+                        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm">
+                            <div>
+                                <span class="font-extrabold text-indigo-600">[${l.grade}]</span>
+                                <span class="font-bold text-slate-800 ml-1">${l.title}</span>
+                                <span class="text-xs text-slate-400 ml-2">(${l.category} • ${l.items.length} ข้อความ)</span>
+                            </div>
+                            <button onclick="Admin.deleteLesson('${l.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold px-2 py-1">
+                                <i class="fa-solid fa-trash"></i> ลบ
+                            </button>
+                        </div>
+                    `).join('');
+                }
+
+                // Render Accounts List
+                const accEl = document.getElementById('adminAccountsList');
+                if (accEl) {
+                    accEl.innerHTML = State.users.map(u => `
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                            <div>
+                                <div class="text-xs font-bold text-indigo-600 uppercase">${u.role} • รหัส: ${u.id}</div>
+                                <div class="font-extrabold text-slate-800">${u.name}</div>
+                                <div class="text-xs text-slate-500">ระดับชั้น: ${u.grade} | PIN: ${u.pin}</div>
+                            </div>
+                            <span class="text-2xl">${u.avatar || '👤'}</span>
+                        </div>
+                    `).join('');
+                }
+            },
+
+            handleAddLesson(e) {
+                e.preventDefault();
+                const grade = document.getElementById('admLessonGrade').value;
+                const category = document.getElementById('admLessonCategory').value.trim();
+                const title = document.getElementById('admLessonTitle').value.trim();
+                const rawItems = document.getElementById('admLessonItems').value.split(',').map(s => s.trim()).filter(Boolean);
+                const questionText = document.getElementById('admLessonQuestion').value.trim();
+
+                const newLesson = {
+                    id: `${grade}-L${Date.now().toString().slice(-3)}`,
+                    grade,
+                    category,
+                    title,
+                    emoji: '📘',
+                    requiredStars: 0,
+                    rewardStars: 4,
+                    rewardCoins: 30,
+                    items: rawItems.map(t => ({ text: t, emoji: '📖', hint: 'อ่านออกเสียงให้ชัดเจน' })),
+                    question: questionText ? { q: questionText, options: ['ตัวเลือกที่ 1', 'ตัวเลือกที่ 2'], answer: 'ตัวเลือกที่ 1' } : null
+                };
+
+                State.lessons.push(newLesson);
+                e.target.reset();
+                this.render();
+                App.toast('เพิ่มบทเรียนใหม่เข้าสู่ระบบเรียบร้อยแล้ว', 'success');
+            },
+
+            deleteLesson(id) {
+                State.lessons = State.lessons.filter(l => l.id !== id);
+                this.render();
+                App.toast('ลบบทเรียนออกจากระบบแล้ว', 'info');
+            },
+
+            copyGasCode() {
+                const code = document.getElementById('gasCodeBlock').innerText;
+                const textarea = document.createElement('textarea');
+                textarea.value = code;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                textarea.remove();
+                App.toast('คัดลอกโค้ด Google Apps Script (Code.gs) ลงคลิปบอร์ดแล้ว!', 'success');
+            },
+
+            exportFullDatabaseJSON() {
+                const data = {
+                    school: 'โรงเรียนบึงงามพัฒนา',
+                    exportedAt: new Date().toISOString(),
+                    users: State.users,
+                    lessons: State.lessons,
+                    readingLogs: State.readingLogs
+                };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `THAI_READING_ADVENTURE_BACKUP.json`;
+                a.click();
+                App.toast('ส่งออกฐานข้อมูลระบบ (JSON) เรียบร้อยแล้ว', 'success');
+            },
+
+            resetDemoData() {
+                State.users = JSON.parse(JSON.stringify(DEFAULT_USERS));
+                State.lessons = JSON.parse(JSON.stringify(DEFAULT_LESSONS));
+                State.readingLogs = JSON.parse(JSON.stringify(DEFAULT_LOGS));
+                State.currentUser = State.users[0];
+                App.updateHeaderUI();
+                this.render();
+                App.toast('รีเซ็ตข้อมูลกลับสู่ค่าเริ่มต้นเรียบร้อยแล้ว', 'info');
+            }
+        };
+
+        /**
+         * ============================================================================
+         * MODULE 9: GOOGLE APPS SCRIPT API CONNECTOR (DYNAMIC ENDPOINT)
+         * ============================================================================
+         */
+        const ApiService = {
+            saveEndpoint() {
+                const url = document.getElementById('apiEndpointInput').value.trim();
+                State.apiEndpoint = url;
+                const dot = document.getElementById('apiStatusDot');
+                const modeText = document.getElementById('loginApiModeText');
+                if (url) {
+                    dot.className = 'inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 ml-1';
+                    if (modeText) modeText.textContent = 'เชื่อมต่อ Google Apps Script API แล้ว';
+                    App.toast('บันทึก Google Apps Script API Endpoint เรียบร้อยแล้ว!', 'success');
+                } else {
+                    dot.className = 'inline-block w-2.5 h-2.5 rounded-full bg-amber-400 ml-1';
+                    if (modeText) modeText.textContent = 'โหมดฐานข้อมูลจำลอง + พร้อมซิงค์ GAS';
+                    App.toast('สลับเป็นโหมดการทำงานภายในเครื่อง (Local Mode)', 'info');
+                }
+                App.closeModal('apiConfigModal');
+            },
+
+            async testConnection() {
+                const url = document.getElementById('apiEndpointInput').value.trim();
+                if (!url) {
+                    App.toast('กรุณากรอก URL ของ Google Apps Script Web App ก่อนทดสอบ', 'warning');
+                    return;
+                }
+                App.showLoading('กำลังทดสอบการเชื่อมต่อกับ Google Apps Script...');
+                try {
+                    const res = await fetch(`${url}?action=ping`);
+                    const data = await res.json();
+                    if (data && data.status === 'ok') {
+                        App.toast('เชื่อมต่อ Google Apps Script สำเร็จ!', 'success');
+                    } else {
+                        App.toast('ได้รับการตอบกลับจากเซิร์ฟเวอร์เรียบร้อย', 'info');
+                    }
+                } catch (err) {
+                    App.toast('ไม่สามารถติดต่อ URL ดังกล่าวได้ กรุณาตรวจสอบสิทธิ์การ Deploy เป็น Anyone', 'error');
+                } finally {
+                    App.hideLoading();
+                }
+            },
+
+            async post(payload) {
+                if (!State.apiEndpoint) return null;
+                try {
+                    const res = await fetch(State.apiEndpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+                    return await res.json();
+                } catch (err) {
+                    return null;
+                }
+            }
+        };
+
+        // Initialize on Window Load
+        window.addEventListener('DOMContentLoaded', () => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+            }
+            App.init();
+        });
+    </script>
+</body>
+</html>
